@@ -118,10 +118,11 @@ function initAnimation() {
 
   engine.resize();
 
-  // Load official final logo asset
+  // Load official final logo asset with support for root or subpath deployments
+  const baseUrl = (import.meta.env.BASE_URL || './').replace(/\/?$/, '/');
   const img = new Image();
   img.crossOrigin = 'Anonymous';
-  img.src = '/assets/final_ecell_logo.png';
+  img.src = `${baseUrl}assets/final_ecell_logo.png`;
 
   const onLoaded = (imageObj) => {
     logoAsset = imageObj;
@@ -144,7 +145,7 @@ function initAnimation() {
   img.onerror = () => {
     // Fallback to SVG
     const svgImg = new Image();
-    svgImg.src = '/assets/final_ecell_logo.svg';
+    svgImg.src = `${baseUrl}assets/final_ecell_logo.svg`;
     svgImg.onload = () => onLoaded(svgImg);
   };
 }

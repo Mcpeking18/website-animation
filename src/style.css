@@ -1,0 +1,367 @@
+/* ==========================================================================
+   E-Cell MSIT Particle Logo Reveal — Stylesheet
+   Brand Colors:
+     Primary Green:     #00C853
+     Primary Blue:      #0072FF
+     Neutral Black:     #0A0A0A
+     Light Background:  #F4F4F4
+     Neutral Grey:      #9CA3AF / #4B5563
+   ========================================================================== */
+
+:root {
+  --color-green: #00C853;
+  --color-blue: #0072FF;
+  --color-black: #0A0A0A;
+  --color-bg: #F4F4F4;
+  --color-grey: #9CA3AF;
+  --color-grey-dark: #4B5563;
+  --color-white: #FFFFFF;
+
+  --font-display: 'Plus Jakarta Sans', 'Outfit', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-tagline: 'Outfit', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--color-bg);
+  color: var(--color-black);
+  font-family: var(--font-display);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  user-select: none;
+}
+
+.reveal-container,
+.ecell-intro-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-bg);
+  overflow: hidden;
+}
+
+/* Fullscreen Particle Canvas */
+.particle-canvas,
+.ecell-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 1;
+  pointer-events: auto;
+  cursor: crosshair;
+}
+
+/* Brand Typography Layer (Wordmark & Tagline) */
+.brand-text-layer,
+.brand-typography-layer {
+  position: absolute;
+  top: calc(50% + 72px);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  z-index: 2;
+  pointer-events: none;
+  width: 90%;
+  max-width: 650px;
+}
+
+/* Wordmark: eCell MSIT */
+.brand-wordmark {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 5.2vw, 3.4rem);
+  font-weight: 800;
+  color: var(--color-black);
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  margin-bottom: 0.45rem;
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.65s var(--ease-out-expo), transform 0.65s var(--ease-out-expo);
+  will-change: opacity, transform;
+}
+
+.brand-wordmark.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.brand-wordmark .char-e,
+.brand-wordmark .char-cell,
+.brand-wordmark .char-msit {
+  color: var(--color-black);
+}
+
+/* Tagline: IDEAS INSPIRE INVEST */
+.brand-tagline {
+  font-family: var(--font-tagline);
+  font-size: clamp(0.72rem, 1.8vw, 0.95rem);
+  font-weight: 600;
+  color: var(--color-grey-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.6s var(--ease-out-expo), transform 0.6s var(--ease-out-expo), letter-spacing 0.8s var(--ease-out-expo);
+  will-change: opacity, transform, letter-spacing;
+}
+
+.brand-tagline.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+  letter-spacing: 0.36em;
+}
+
+/* Top Status Header */
+.top-status-bar,
+.ecell-status-header {
+  position: absolute;
+  top: 1.25rem;
+  left: 1.5rem;
+  right: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.brand-badge,
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  padding: 0.4rem 0.85rem;
+  border-radius: 9999px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+}
+
+.status-dot,
+.live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--color-green);
+  box-shadow: 0 0 8px rgba(0, 200, 83, 0.6);
+  animation: pulse-dot 2s infinite ease-in-out;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.85); }
+}
+
+.society-title,
+.badge-org {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--color-black);
+}
+
+.phase-badge,
+.badge-phase {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--color-grey-dark);
+  background: rgba(0, 0, 0, 0.04);
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.timer-display,
+.timer-badge {
+  font-family: monospace, var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-grey-dark);
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  padding: 0.4rem 0.75rem;
+  border-radius: 9999px;
+}
+
+/* Glass Controls Bar */
+.controls-bar,
+.ecell-controls {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: rgba(255, 255, 255, 0.84);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  padding: 0.45rem 0.6rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+  z-index: 10;
+}
+
+.ctrl-group {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-left: 1px solid rgba(0, 0, 0, 0.08);
+  padding-left: 0.5rem;
+}
+
+.ctrl-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: none;
+  background: transparent;
+  color: var(--color-black);
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0.45rem 0.85rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ctrl-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.ctrl-btn:active {
+  transform: scale(0.96);
+}
+
+.ctrl-btn.primary {
+  background: var(--color-black);
+  color: var(--color-white);
+  box-shadow: 0 4px 12px rgba(10, 10, 10, 0.15);
+}
+
+.ctrl-btn.primary:hover {
+  background: #222222;
+  box-shadow: 0 6px 16px rgba(10, 10, 10, 0.22);
+}
+
+.ctrl-btn.active {
+  background: rgba(0, 200, 83, 0.12);
+  color: #008738;
+}
+
+.btn-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.btn-glyph {
+  font-size: 0.85rem;
+}
+
+.kbd-hint {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.22);
+  font-family: inherit;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  margin-left: 0.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+/* Timeline Scrubber Bar */
+.timeline-bar-wrap,
+.timeline-tracker {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: rgba(0, 0, 0, 0.04);
+  z-index: 20;
+}
+
+.timeline-progress,
+.timeline-fill {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-green), var(--color-blue));
+}
+
+/* Responsive Scaling */
+@media (max-width: 640px) {
+  .brand-text-layer,
+  .brand-typography-layer {
+    top: calc(50% + 56px);
+  }
+
+  .top-status-bar,
+  .ecell-status-header {
+    top: 1rem;
+    left: 1rem;
+    right: 1rem;
+  }
+
+  .phase-badge,
+  .badge-phase {
+    display: none;
+  }
+
+  .controls-bar,
+  .ecell-controls {
+    bottom: 1rem;
+    width: 92%;
+    justify-content: space-between;
+    padding: 0.35rem 0.45rem;
+  }
+
+  .ctrl-btn {
+    padding: 0.4rem 0.55rem;
+    font-size: 0.74rem;
+  }
+
+  .kbd-hint {
+    display: none;
+  }
+}
+
+/* Accessibility: Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .brand-wordmark,
+  .brand-tagline {
+    transition: opacity 0.3s ease;
+    transform: none !important;
+  }
+
+  .status-dot,
+  .live-dot {
+    animation: none;
+  }
+}

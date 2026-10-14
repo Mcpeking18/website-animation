@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/assets/final_ecell_logo.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="description" content="E-Cell MSIT Particle Logo Reveal — Official interactive brand reveal animation prototype." />
+    <meta name="theme-color" content="#F4F4F4" />
+    <title>E-Cell MSIT — Particle Logo Reveal</title>
+
+    <!-- Google Fonts: Plus Jakarta Sans & Outfit for geometric startup typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <main id="app" class="reveal-container" role="main" aria-label="E-Cell MSIT Logo Animation">
+      <!-- Fullscreen Particle Canvas -->
+      <canvas id="particle-canvas" class="particle-canvas" aria-hidden="true"></canvas>
+
+      <!-- Typography Layer (Wordmark & Tagline) -->
+      <section class="brand-text-layer" aria-live="polite">
+        <h1 id="brand-wordmark" class="brand-wordmark">
+          <span class="char-e">e</span><span class="char-cell">Cell</span> <span class="char-msit">MSIT</span>
+        </h1>
+        <p id="brand-tagline" class="brand-tagline">IDEAS INSPIRE INVEST</p>
+      </section>
+
+      <!-- Top Status Header -->
+      <header class="top-status-bar">
+        <div class="brand-badge">
+          <span class="status-dot"></span>
+          <span class="society-title">E-Cell MSIT</span>
+          <span class="phase-badge" id="phase-badge">Phase A: Particles Arrive</span>
+        </div>
+        <div class="timer-display" id="timer-display">0.0s / 3.5s</div>
+      </header>
+
+      <!-- Interactive Controls Bar -->
+      <nav class="controls-bar" aria-label="Animation Controls">
+        <button id="btn-replay" class="ctrl-btn primary" title="Replay Animation (Press 'R' or Space)" aria-label="Replay animation">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="1 4 1 10 7 10"></polyline>
+            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+          </svg>
+          <span class="btn-label">Replay</span>
+          <kbd class="kbd-hint">R</kbd>
+        </button>
+
+        <div class="ctrl-group">
+          <button id="btn-speed" class="ctrl-btn secondary" title="Toggle Playback Speed" aria-label="Toggle playback speed">
+            <span class="btn-glyph">⚡</span>
+            <span id="speed-label" class="btn-label">1.0x</span>
+          </button>
+
+          <button id="btn-density" class="ctrl-btn secondary" title="Toggle Particle Density" aria-label="Toggle particle count">
+            <span class="btn-glyph">✦</span>
+            <span id="density-label" class="btn-label">Rich (~2.6k)</span>
+          </button>
+
+          <button id="btn-reduced-motion" class="ctrl-btn secondary" title="Toggle Reduced Motion Mode" aria-label="Toggle reduced motion">
+            <span class="btn-glyph">♿</span>
+            <span id="motion-label" class="btn-label">Standard</span>
+          </button>
+        </div>
+      </nav>
+
+      <!-- Timeline Progress Bar -->
+      <div class="timeline-bar-wrap">
+        <div id="timeline-progress" class="timeline-progress"></div>
+      </div>
+    </main>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

@@ -40,18 +40,8 @@ export class Animation4Module {
           <p class="anim4-tagline">IDEAS INSPIRE INVEST</p>
         </section>
 
-        <!-- Top Status Bar -->
-        <header class="anim4-status-bar">
-          <div class="anim4-brand-badge">
-            <span class="anim4-status-dot"></span>
-            <span class="anim4-society-title">E-Cell MSIT</span>
-            <span class="anim4-phase-badge">Orbital Atmosphere</span>
-          </div>
-          <div class="anim4-timer-display">0.0s / 4.9s</div>
-        </header>
-
-        <!-- Controls Bar -->
-        <nav class="anim4-controls-bar" aria-label="Orbital Trace Animation Controls">
+        <!-- Minimal Sleek Floating Replay Control -->
+        <nav class="anim4-controls-bar" aria-label="Animation Controls">
           <button class="anim4-ctrl-btn primary btn-replay" title="Replay Animation (Press 'R' or Space)">
             <svg class="anim4-ctrl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="1 4 1 10 7 10"></polyline>
@@ -59,16 +49,6 @@ export class Animation4Module {
             </svg>
             <span>Replay</span>
             <kbd class="anim4-kbd-hint">R</kbd>
-          </button>
-
-          <button class="anim4-ctrl-btn btn-speed" title="Toggle Tracing Speed">
-            <span>⚡</span>
-            <span class="speed-label">1.0x Speed</span>
-          </button>
-
-          <button class="anim4-ctrl-btn btn-motion" title="Toggle Reduced Motion">
-            <span>♿</span>
-            <span class="motion-label">${this.isReducedMotion ? 'Reduced' : 'Standard'}</span>
           </button>
         </nav>
       </div>
@@ -79,14 +59,7 @@ export class Animation4Module {
     this.svgContainer = container.querySelector('.anim4-svg-container');
     this.wordmark = container.querySelector('.anim4-wordmark');
     this.tagline = container.querySelector('.anim4-tagline');
-    this.phaseBadge = container.querySelector('.anim4-phase-badge');
-    this.timerDisplay = container.querySelector('.anim4-timer-display');
-
     this.btnReplay = container.querySelector('.btn-replay');
-    this.btnSpeed = container.querySelector('.btn-speed');
-    this.speedLabel = container.querySelector('.speed-label');
-    this.btnMotion = container.querySelector('.btn-motion');
-    this.motionLabel = container.querySelector('.motion-label');
 
     this.initEngine();
     this.bindEvents();
@@ -105,16 +78,7 @@ export class Animation4Module {
     };
 
     this.engine = new OrbitalTraceEngine(this.canvas, this.svgContainer, {
-      onPhaseChange: (phase, elapsed) => {
-        if (this.phaseBadge && PHASE_TITLES[phase]) {
-          this.phaseBadge.textContent = PHASE_TITLES[phase];
-        }
-
-        if (this.timerDisplay && typeof elapsed === 'number') {
-          const sec = (elapsed / 1000).toFixed(1);
-          this.timerDisplay.textContent = `${sec}s / 5.1s`;
-        }
-
+      onPhaseChange: (phase) => {
         // Trigger typography reveals sequentially
         if (phase === 'wordmark' || phase === 'tagline' || phase === 'hold') {
           this.wordmark?.classList.add('is-revealed');
@@ -152,33 +116,6 @@ export class Animation4Module {
       this.engine?.start();
     };
     this.btnReplay?.addEventListener('click', this.boundHandlers.onReplay);
-
-    // Speed toggle
-    this.boundHandlers.onSpeedToggle = () => {
-      this.currentSpeedIndex = (this.currentSpeedIndex + 1) % this.speedConfigs.length;
-      const speed = this.speedConfigs[this.currentSpeedIndex];
-      this.engine?.setSpeed(speed);
-      if (this.speedLabel) {
-        this.speedLabel.textContent = `${speed}x Speed`;
-      }
-    };
-    this.btnSpeed?.addEventListener('click', this.boundHandlers.onSpeedToggle);
-
-    // Reduced Motion toggle
-    this.boundHandlers.onMotionToggle = () => {
-      this.isReducedMotion = !this.isReducedMotion;
-      this.engine?.setReducedMotion(this.isReducedMotion);
-      if (this.motionLabel) {
-        this.motionLabel.textContent = this.isReducedMotion ? 'Reduced' : 'Standard';
-      }
-      if (this.isReducedMotion) {
-        this.wordmark?.classList.add('is-revealed');
-        this.tagline?.classList.add('is-revealed');
-      } else {
-        this.boundHandlers.onReplay();
-      }
-    };
-    this.btnMotion?.addEventListener('click', this.boundHandlers.onMotionToggle);
 
     // Keyboard Shortcuts (R = Replay, Space = Replay)
     this.boundHandlers.onKeyDown = (e) => {

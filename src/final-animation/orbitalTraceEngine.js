@@ -355,27 +355,66 @@ export class OrbitalTraceEngine {
       if (amb.y > this.height) amb.y = 0;
     }
 
-    // 3. Emit occasional fine green/blue stardust droplets from orbital comet head once active
-    if (this.orbitActive && Math.random() < 0.22 * this.speed) {
-      const head = this.orbitalTrail[this.orbitalTrail.length - 1];
-      if (head) {
-        const curA = this.orbitAngle + head.offsetAngle;
-        const rx = Math.cos(curA) * head.distX;
-        const ry = Math.sin(curA) * head.distY;
-        const rotX = rx * Math.cos(head.tilt) - ry * Math.sin(head.tilt);
-        const rotY = rx * Math.sin(head.tilt) + ry * Math.cos(head.tilt);
+    // 3. Emit fine stardust droplets dropping from the comet tail (snake litter effect) and head sparks
+    if (this.orbitActive) {
+      // Find the trailing end (the currently visible end of the tail)
+      const minFrac = 1.0 - this.trailLengthFactor;
+      let tailEnd = null;
+      for (let i = 0; i < this.orbitalTrail.length; i++) {
+        const orb = this.orbitalTrail[i];
+        if (orb.frac >= minFrac) {
+          tailEnd = orb;
+          break;
+        }
+      }
+
+      // Shed droplets from the tail tip as it glides (dots dropping from the end)
+      if (tailEnd && Math.random() < 0.42 * this.speed) {
+        const curA = this.orbitAngle + tailEnd.offsetAngle;
+        const rx = Math.cos(curA) * tailEnd.distX;
+        const ry = Math.sin(curA) * tailEnd.distY;
+        const rotX = rx * Math.cos(tailEnd.tilt) - ry * Math.sin(tailEnd.tilt);
+        const rotY = rx * Math.sin(tailEnd.tilt) + ry * Math.cos(tailEnd.tilt);
+
+        // Gentle backward wake drift
+        const tanX = -Math.sin(curA) * 0.35 * this.dpr;
+        const tanY = Math.cos(curA) * 0.35 * this.dpr;
 
         this.stardustDroplets.push({
           x: this.centerX + rotX,
           y: this.centerY + rotY,
-          vx: (Math.random() - 0.5) * 0.6 * this.dpr,
-          vy: (Math.random() - 0.5) * 0.6 * this.dpr,
-          radius: (0.8 + Math.random() * 1.3) * this.dpr,
-          color: Math.random() > 0.5 ? BRAND.colors.green : BRAND.colors.blue,
-          alpha: 0.85,
+          vx: -tanX * 0.25 + (Math.random() - 0.5) * 0.4 * this.dpr,
+          vy: -tanY * 0.25 + (Math.random() - 0.5) * 0.4 * this.dpr,
+          radius: (0.9 + Math.random() * 1.5) * this.dpr,
+          color: Math.random() > 0.45 ? tailEnd.color : (Math.random() > 0.5 ? BRAND.colors.green : BRAND.colors.blue),
+          alpha: 0.9,
           life: 1.0,
-          decay: 0.025 + Math.random() * 0.02
+          decay: 0.018 + Math.random() * 0.02
         });
+      }
+
+      // Also occasional spark from the leading comet head
+      if (Math.random() < 0.18 * this.speed) {
+        const head = this.orbitalTrail[this.orbitalTrail.length - 1];
+        if (head) {
+          const curA = this.orbitAngle + head.offsetAngle;
+          const rx = Math.cos(curA) * head.distX;
+          const ry = Math.sin(curA) * head.distY;
+          const rotX = rx * Math.cos(head.tilt) - ry * Math.sin(head.tilt);
+          const rotY = rx * Math.sin(head.tilt) + ry * Math.cos(head.tilt);
+
+          this.stardustDroplets.push({
+            x: this.centerX + rotX,
+            y: this.centerY + rotY,
+            vx: (Math.random() - 0.5) * 0.5 * this.dpr,
+            vy: (Math.random() - 0.5) * 0.5 * this.dpr,
+            radius: (0.8 + Math.random() * 1.2) * this.dpr,
+            color: '#FFFFFF',
+            alpha: 0.85,
+            life: 1.0,
+            decay: 0.025 + Math.random() * 0.02
+          });
+        }
       }
     }
 

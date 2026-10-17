@@ -1,17 +1,16 @@
 /**
- * E-Cell MSIT — Animation Lab
- * Application Entry Point
- * Orchestrates router, animation lifecycle, and switcher bar.
+ * Final Animation Ecell — Application Entry Point
+ * 
+ * Direct full-screen cinematic reveal of the official E-Cell MSIT emblem.
+ * No router, no extraneous pages, pure single-purpose presentation.
  */
 
 import './style.css';
-import { Router } from './shared/router.js';
+import { finalAnimation } from './final-animation/index.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-  const viewport = document.getElementById('animation-viewport');
-  const switcher = document.getElementById('lab-switcher');
-
-  if (viewport && switcher) {
-    new Router(viewport, switcher);
+  const app = document.getElementById('app');
+  if (app) {
+    finalAnimation.mount(app);
   }
 });

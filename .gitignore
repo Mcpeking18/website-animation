@@ -12,6 +12,8 @@ dist
 dist-ssr
 *.local
 *.zip
+
+# Old ecell website cloned from GitHub
 eCellwebsite2026-27/
 
 # Editor directories and files

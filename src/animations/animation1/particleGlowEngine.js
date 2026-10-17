@@ -243,8 +243,8 @@ export class ParticleGlowEngine {
         if (a < 65) continue; // Skip transparency
 
         // Determine authentic brand segment color
-        let colorType = 'black';
-        let hexColor = BRAND.colors.black;
+        let colorType = 'center';
+        let hexColor = BRAND.colors.textMain;
 
         if (g > 130 && r < 120 && b < 140) {
           colorType = 'green';
@@ -253,8 +253,8 @@ export class ParticleGlowEngine {
           colorType = 'blue';
           hexColor = BRAND.colors.blue;
         } else {
-          colorType = 'black';
-          hexColor = BRAND.colors.black;
+          colorType = 'center';
+          hexColor = BRAND.colors.textMain;
         }
 
         // Relative coordinate normalized to emblem center
@@ -561,8 +561,15 @@ export class ParticleGlowEngine {
   render() {
     const ctx = this.ctx;
 
-    // 1. Clean brand light background
-    ctx.fillStyle = BRAND.colors.background;
+    // 1. Deep cinematic blue radial background
+    const bgGrad = ctx.createRadialGradient(
+      this.centerX, this.centerY, 10,
+      this.centerX, this.centerY, Math.max(this.width, this.height) * 0.72
+    );
+    bgGrad.addColorStop(0, '#101B30');
+    bgGrad.addColorStop(0.65, '#0B1220');
+    bgGrad.addColorStop(1, '#070B14');
+    ctx.fillStyle = bgGrad;
     ctx.fillRect(0, 0, this.width, this.height);
 
     // 2. Ambient Background Particles
@@ -668,14 +675,14 @@ export class ParticleGlowEngine {
     // 5. Render Core Logo Particles (Batch rendered by color)
     const greens = [];
     const blues = [];
-    const blacks = [];
+    const centerParticles = [];
 
     for (let i = 0; i < this.particles.length; i++) {
       const p = this.particles[i];
       if (p.alpha <= 0.01) continue;
       if (p.colorType === 'green') greens.push(p);
       else if (p.colorType === 'blue') blues.push(p);
-      else blacks.push(p);
+      else centerParticles.push(p);
     }
 
     const particleMult = 1.0 - (this.crispLogoAlpha * 0.88);
@@ -704,11 +711,11 @@ export class ParticleGlowEngine {
       ctx.fill();
     }
 
-    // Render Blacks (#0A0A0A)
-    if (blacks.length > 0) {
-      ctx.fillStyle = BRAND.colors.black;
+    // Render Center 'e' (#F4F4F4 on dark canvas)
+    if (centerParticles.length > 0) {
+      ctx.fillStyle = BRAND.colors.textMain;
       ctx.beginPath();
-      for (const p of blacks) {
+      for (const p of centerParticles) {
         ctx.globalAlpha = p.alpha * particleMult;
         ctx.moveTo(p.x + p.currentRadius, p.y);
         ctx.arc(p.x, p.y, p.currentRadius, 0, Math.PI * 2);

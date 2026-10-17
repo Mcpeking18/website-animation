@@ -1,7 +1,6 @@
 /**
  * E-Cell MSIT Animation Lab Registry
- * Central registry mapping routes to animation modules.
- * Adding a new animation in the future only requires adding an entry here!
+ * Central registry mapping routes to fully functional animation modules.
  */
 
 import { animation1 } from './animations/animation1/index.js';
@@ -12,53 +11,56 @@ export const ANIMATIONS = [
   {
     id: '1',
     hash: '#/animation/1',
-    aliases: ['#/', '#', '', '#/1'],
-    title: '01 · Particle Glow',
-    shortTitle: '01 · Glow',
-    description: 'Particle convergence with cinematic illumination and orbital aura',
+    aliases: ['#/', '#', '', '#/1', '#/particle'],
+    title: '01 · Particle',
+    shortTitle: 'Particle',
+    description: 'Dynamic particle convergence with cinematic dual-tone halo and orbital trail',
     status: 'active',
     module: animation1,
   },
   {
     id: '2',
     hash: '#/animation/2',
-    aliases: ['#/2'],
-    title: '02 · Geometric Pulse',
-    shortTitle: '02 · Pulse',
-    description: 'Vector morphing and synchronized harmonic pulse',
-    status: 'in-dev',
+    aliases: ['#/2', '#/pulse'],
+    title: '02 · Pulse',
+    shortTitle: 'Pulse',
+    description: 'Harmonic breathing pulse with acoustic wavefronts and reactive stardust',
+    status: 'active',
     module: animation2,
   },
   {
     id: '3',
     hash: '#/animation/3',
-    aliases: ['#/3'],
-    title: '03 · Kinetic Trace',
-    shortTitle: '03 · Trace',
-    description: 'Continuous line drawing and typographic synthesis',
-    status: 'planned',
+    aliases: ['#/3', '#/trace'],
+    title: '03 · Trace',
+    shortTitle: 'Trace',
+    description: 'Luminous electric path tracing along authentic SVG geometric contours',
+    status: 'active',
     module: animation3,
   },
 ];
 
 /**
- * Resolve an animation by hash or route string
+ * Resolve an animation by hash, name, or route string
  */
 export function resolveAnimation(route) {
-  const cleanRoute = (route || '').trim();
+  const cleanRoute = (route || '').trim().toLowerCase();
 
   // Try exact match on hash
-  let match = ANIMATIONS.find((a) => a.hash === cleanRoute);
+  let match = ANIMATIONS.find((a) => a.hash.toLowerCase() === cleanRoute);
   if (match) return match;
 
   // Try aliases
-  match = ANIMATIONS.find((a) => a.aliases && a.aliases.includes(cleanRoute));
+  match = ANIMATIONS.find((a) => a.aliases && a.aliases.some(alias => alias.toLowerCase() === cleanRoute));
   if (match) return match;
 
-  // Try by ID
-  match = ANIMATIONS.find((a) => a.id === cleanRoute.replace(/^#\/?(animation\/)?/, ''));
+  // Try by ID or shortTitle
+  match = ANIMATIONS.find((a) =>
+    a.id === cleanRoute.replace(/^#\/?(animation\/)?/, '') ||
+    a.shortTitle.toLowerCase() === cleanRoute.replace(/^#\/?(animation\/)?/, '')
+  );
   if (match) return match;
 
-  // Default to Animation 1
+  // Default to Animation 1 (Particle)
   return ANIMATIONS[0];
 }

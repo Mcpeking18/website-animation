@@ -159,8 +159,8 @@ export class Animation1Module {
 
     this.engine.resize();
 
-    // Load authentic master emblem
-    const emblemSrc = BRAND.resolveAsset(BRAND.assets.emblemPng);
+    // Load authentic master emblem with dark-mode contrast
+    const emblemSrc = BRAND.resolveAsset(BRAND.assets.emblemDarkSvg || BRAND.assets.emblemPng);
     const img = new Image();
     img.crossOrigin = 'Anonymous';
     img.src = emblemSrc;
@@ -187,9 +187,9 @@ export class Animation1Module {
 
     img.onload = () => onLoaded(img);
     img.onerror = () => {
-      const svgImg = new Image();
-      svgImg.src = BRAND.resolveAsset(BRAND.assets.emblemSvg);
-      svgImg.onload = () => onLoaded(svgImg);
+      const fallbackImg = new Image();
+      fallbackImg.src = BRAND.resolveAsset(BRAND.assets.emblemSvg);
+      fallbackImg.onload = () => onLoaded(fallbackImg);
     };
   }
 

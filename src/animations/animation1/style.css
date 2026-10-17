@@ -1,5 +1,5 @@
 /* ==========================================================================
-  Animation 1: Particle Convergence with Cinematic Glow Styles
+  Animation 1: Particle Convergence with Cinematic Glow Styles (Deep Blue)
   ========================================================================== */
 
 .anim1-root {
@@ -10,7 +10,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: var(--color-bg, #F4F4F4);
+  background-color: var(--color-bg, #0B1220);
   overflow: hidden;
 }
 
@@ -45,10 +45,10 @@
 
 /* Wordmark: eCell MSIT */
 .anim1-wordmark {
-  font-family: var(--font-display, 'Plus Jakarta Sans', 'Outfit', sans-serif);
+  font-family: var(--font-display, 'Plus Jakarta Sans', sans-serif);
   font-size: clamp(2.2rem, 5.2vw, 3.4rem);
   font-weight: 800;
-  color: #0A0A0A;
+  color: var(--color-text-main, #F4F4F4);
   letter-spacing: -0.025em;
   line-height: 1.1;
   margin-bottom: 0.45rem;
@@ -56,6 +56,7 @@
   transform: translateY(18px);
   transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: opacity, transform;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
 }
 
 .anim1-wordmark.is-revealed {
@@ -65,16 +66,17 @@
 
 /* Tagline: IDEAS INSPIRE INVEST */
 .anim1-tagline {
-  font-family: var(--font-tagline, 'Outfit', 'Plus Jakarta Sans', sans-serif);
+  font-family: var(--font-tagline, 'Outfit', sans-serif);
   font-size: clamp(0.72rem, 1.8vw, 0.95rem);
   font-weight: 600;
-  color: #4B5563;
+  color: var(--color-text-secondary, #9CA3AF);
   text-transform: uppercase;
   letter-spacing: 0.22em;
   opacity: 0;
   transform: translateY(12px);
   transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), letter-spacing 0.8s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: opacity, transform, letter-spacing;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
 .anim1-tagline.is-revealed {
@@ -100,13 +102,13 @@
   display: inline-flex;
   align-items: center;
   gap: 0.65rem;
-  background: rgba(255, 255, 255, 0.82);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(16, 27, 48, 0.78);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   padding: 0.4rem 0.95rem;
   border-radius: 9999px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
 .anim1-status-dot {
@@ -114,7 +116,7 @@
   height: 8px;
   border-radius: 50%;
   background-color: #00C853;
-  box-shadow: 0 0 10px rgba(0, 200, 83, 0.6);
+  box-shadow: 0 0 12px rgba(0, 200, 83, 0.8);
   animation: anim1-pulse-dot 2s infinite ease-in-out;
 }
 
@@ -127,7 +129,7 @@
   font-family: var(--font-display, 'Plus Jakarta Sans', sans-serif);
   font-size: 0.82rem;
   font-weight: 700;
-  color: #0A0A0A;
+  color: #F4F4F4;
   letter-spacing: -0.01em;
 }
 
@@ -135,10 +137,11 @@
   font-family: var(--font-tagline, 'Outfit', sans-serif);
   font-size: 0.74rem;
   font-weight: 600;
-  color: #0072FF;
-  background: rgba(0, 114, 255, 0.08);
+  color: #60A5FA;
+  background: rgba(0, 114, 255, 0.18);
   padding: 0.2rem 0.55rem;
   border-radius: 6px;
+  border: 1px solid rgba(0, 114, 255, 0.3);
   transition: all 0.3s ease;
 }
 
@@ -146,33 +149,33 @@
   font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
   font-size: 0.82rem;
   font-weight: 600;
-  color: #4B5563;
-  background: rgba(255, 255, 255, 0.82);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  color: #9CA3AF;
+  background: rgba(16, 27, 48, 0.78);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   padding: 0.4rem 0.85rem;
   border-radius: 9999px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
 /* Local Controls Bar */
 .anim1-controls-bar {
   position: absolute;
-  bottom: 5.25rem; /* Sits cleanly above the lab switcher bar */
+  bottom: 5.25rem;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   align-items: center;
   gap: 0.5rem;
   z-index: 10;
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(0, 0, 0, 0.09);
+  background: rgba(16, 27, 48, 0.82);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   padding: 0.35rem 0.5rem;
   border-radius: 9999px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
   pointer-events: auto;
 }
 
@@ -187,26 +190,26 @@
   font-weight: 600;
   border: none;
   background: transparent;
-  color: #4B5563;
+  color: #9CA3AF;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   white-space: nowrap;
 }
 
 .anim1-ctrl-btn:hover {
-  background: rgba(0, 0, 0, 0.05);
-  color: #0A0A0A;
+  background: rgba(255, 255, 255, 0.08);
+  color: #F4F4F4;
 }
 
 .anim1-ctrl-btn.primary {
-  background: #0A0A0A;
+  background: rgba(255, 255, 255, 0.16);
   color: #FFFFFF;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
 }
 
 .anim1-ctrl-btn.primary:hover {
-  background: #262626;
+  background: rgba(255, 255, 255, 0.25);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .anim1-ctrl-icon {
@@ -217,7 +220,7 @@
 .anim1-kbd-hint {
   font-family: 'SF Mono', monospace;
   font-size: 0.65rem;
-  background: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.2);
   padding: 0.1rem 0.35rem;
   border-radius: 4px;
 }
@@ -229,7 +232,7 @@
   left: 0;
   width: 100%;
   height: 3px;
-  background: rgba(0, 0, 0, 0.04);
+  background: rgba(255, 255, 255, 0.05);
   z-index: 10;
 }
 
@@ -237,5 +240,6 @@
   height: 100%;
   width: 0%;
   background: linear-gradient(90deg, #00C853, #0072FF);
+  box-shadow: 0 0 10px rgba(0, 200, 83, 0.6);
   transition: width 0.08s linear;
 }

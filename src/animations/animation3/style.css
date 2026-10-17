@@ -1,0 +1,254 @@
+/* ==========================================================================
+  Animation 3: Trace (Geometric Path Tracing) Styles
+  ========================================================================== */
+
+.anim3-root {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-bg, #0B1220);
+  overflow: hidden;
+}
+
+/* SVG Emblem Container */
+.trace-canvas-wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.trace-bg-glow {
+  position: absolute;
+  top: calc(50% - 60px);
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 420px;
+  height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 114, 255, 0.16) 0%, rgba(0, 200, 83, 0.12) 40%, rgba(11, 18, 32, 0) 70%);
+  filter: blur(40px);
+  pointer-events: none;
+}
+
+.trace-svg {
+  position: absolute;
+  top: calc(50% - 62px);
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: clamp(190px, 42vw, 220px);
+  height: auto;
+  overflow: visible;
+  z-index: 2;
+  filter: drop-shadow(0 8px 30px rgba(0, 0, 0, 0.6));
+}
+
+.trace-path {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: fill-opacity 0.4s ease;
+}
+
+/* Brand Typography Layer */
+.anim3-typography-layer {
+  position: absolute;
+  top: calc(50% + 72px);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  z-index: 5;
+  pointer-events: none;
+  width: 90%;
+  max-width: 650px;
+}
+
+/* Wordmark: eCell MSIT */
+.anim3-wordmark {
+  font-family: var(--font-display, 'Plus Jakarta Sans', sans-serif);
+  font-size: clamp(2.2rem, 5.2vw, 3.4rem);
+  font-weight: 800;
+  color: var(--color-text-main, #F4F4F4);
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  margin-bottom: 0.45rem;
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.7);
+}
+
+.anim3-wordmark.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Tagline: IDEAS INSPIRE INVEST */
+.anim3-tagline {
+  font-family: var(--font-tagline, 'Outfit', sans-serif);
+  font-size: clamp(0.72rem, 1.8vw, 0.95rem);
+  font-weight: 600;
+  color: var(--color-text-secondary, #9CA3AF);
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), transform 0.65s cubic-bezier(0.16, 1, 0.3, 1), letter-spacing 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform, letter-spacing;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+}
+
+.anim3-tagline.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+  letter-spacing: 0.36em;
+}
+
+/* Status Header */
+.anim3-status-bar {
+  position: absolute;
+  top: 1.25rem;
+  left: 1.5rem;
+  right: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.anim3-brand-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  background: rgba(16, 27, 48, 0.78);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 0.4rem 0.95rem;
+  border-radius: 9999px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.anim3-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #00C853;
+  box-shadow: 0 0 12px rgba(0, 200, 83, 0.9);
+  animation: anim3-trace-dot 1.8s infinite ease-in-out;
+}
+
+@keyframes anim3-trace-dot {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.4); opacity: 1; box-shadow: 0 0 16px rgba(0, 114, 255, 1); }
+}
+
+.anim3-society-title {
+  font-family: var(--font-display, 'Plus Jakarta Sans', sans-serif);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #F4F4F4;
+  letter-spacing: -0.01em;
+}
+
+.anim3-phase-badge {
+  font-family: var(--font-tagline, 'Outfit', sans-serif);
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: #6EE7B7;
+  background: rgba(0, 200, 83, 0.18);
+  padding: 0.2rem 0.55rem;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 200, 83, 0.3);
+}
+
+.anim3-timer-display {
+  font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #9CA3AF;
+  background: rgba(16, 27, 48, 0.78);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 0.4rem 0.85rem;
+  border-radius: 9999px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+/* Local Controls Bar */
+.anim3-controls-bar {
+  position: absolute;
+  bottom: 5.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  z-index: 10;
+  background: rgba(16, 27, 48, 0.82);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 0.35rem 0.5rem;
+  border-radius: 9999px;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
+  pointer-events: auto;
+}
+
+.anim3-ctrl-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.38rem 0.75rem;
+  border-radius: 9999px;
+  font-family: var(--font-tagline, 'Outfit', sans-serif);
+  font-size: 0.76rem;
+  font-weight: 600;
+  border: none;
+  background: transparent;
+  color: #9CA3AF;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+
+.anim3-ctrl-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #F4F4F4;
+}
+
+.anim3-ctrl-btn.primary {
+  background: rgba(255, 255, 255, 0.16);
+  color: #FFFFFF;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+}
+
+.anim3-ctrl-btn.primary:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+.anim3-ctrl-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.anim3-kbd-hint {
+  font-family: 'SF Mono', monospace;
+  font-size: 0.65rem;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+}

@@ -1,7 +1,7 @@
 /**
  * E-Cell MSIT — Shared Brand Configuration
- * Unified brand tokens, color palettes, typography, and asset paths
- * for all animations in the Animation Lab.
+ * Unified brand tokens, cinematic deep-blue color palette, typography,
+ * and asset paths for all animations in the Animation Lab.
  */
 
 export const BRAND = {
@@ -10,16 +10,27 @@ export const BRAND = {
   tagline: 'IDEAS INSPIRE INVEST',
 
   colors: {
+    // Brand Primaries
     green: '#00C853',        // Primary Brand Green (Top emblem petals)
-    greenGlow: 'rgba(0, 200, 83, 0.45)',
     blue: '#0072FF',         // Primary Brand Blue (Bottom emblem petals)
-    blueGlow: 'rgba(0, 114, 255, 0.45)',
-    black: '#0A0A0A',        // Neutral Black (Central lowercase 'e', typography)
-    background: '#F4F4F4',   // Clean Light Canvas Background
-    grey: '#9CA3AF',         // Neutral Grey
-    greyDark: '#4B5563',     // Darker Grey for Subtitles
+
+    // Cinematic Deep Blue Background Palette
+    background: '#0B1220',   // Main Deep Cinematic Canvas Background
+    bgSecondary: '#101B30',  // Secondary Deep Blue for subtle gradients & panels
+    blueIllumination: '#123B70', // Subtle Blue Ambient Illumination
+    greenGlow: 'rgba(0, 200, 83, 0.35)',
+    blueGlow: 'rgba(0, 114, 255, 0.35)',
+
+    // High-Contrast Typography & Accent
+    textMain: '#F4F4F4',     // Primary Text / Central 'e' (Crisp, High Contrast)
+    textSecondary: '#9CA3AF',// Secondary Text for Tagline & Subtitles
+    textMuted: '#6B7280',
     white: '#FFFFFF',
-    glowHalo: 'rgba(255, 255, 255, 0.85)',
+
+    // Glassmorphism tokens
+    glassBg: 'rgba(16, 27, 48, 0.78)',
+    glassBorder: 'rgba(255, 255, 255, 0.10)',
+    glassShadow: '0 12px 35px rgba(0, 0, 0, 0.45)',
   },
 
   fonts: {
@@ -28,9 +39,9 @@ export const BRAND = {
   },
 
   assets: {
-    // Relative to base URL
     emblemPng: 'assets/final_ecell_logo.png',
     emblemSvg: 'assets/final_ecell_logo.svg',
+    emblemDarkSvg: 'assets/final_ecell_logo_dark.svg',
     typographySvg: 'assets/ecell_text_part.svg',
   },
 

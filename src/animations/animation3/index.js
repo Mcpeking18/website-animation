@@ -1,117 +1,200 @@
 /**
- * Animation 3 Placeholder Module
+ * Animation 3: Trace (Geometric Path Tracing)
  * Standardized module interface:
- * - mount(container): Renders clean placeholder state
- * - unmount(): Cleans up
+ * - mount(container): Builds DOM, initializes engine, binds listeners, starts reveal
+ * - unmount(): Cleans up engine, removes all event listeners
  */
 
-import { BRAND } from '../../shared/brand.js';
+import { TraceEngine, TIMING_TRACE } from './traceEngine.js';
+import './style.css';
 
 export class Animation3Module {
   constructor() {
     this.container = null;
+    this.engine = null;
+
+    this.currentSpeedIndex = 1;
+    this.speedConfigs = [0.6, 1.0, 1.5];
+
+    this.isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.boundHandlers = {};
   }
 
   mount(container) {
     this.container = container;
+
+    // Render Clean Semantic HTML Shell
     container.innerHTML = `
-      <div style="
-        position: relative;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        background-color: #F4F4F4;
-        text-align: center;
-        padding: 2rem;
-        user-select: none;
-      ">
-        <div style="
-          background: rgba(255, 255, 255, 0.85);
-          backdrop-filter: blur(16px);
-          -webkit-backdrop-filter: blur(16px);
-          border: 1px solid rgba(0, 0, 0, 0.08);
-          border-radius: 24px;
-          padding: 3rem 2.5rem;
-          max-width: 520px;
-          width: 100%;
-          box-shadow: 0 12px 40px rgba(0, 0, 0, 0.05);
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 1.25rem;
-        ">
-          <!-- Logo Watermark -->
-          <img
-            src="${BRAND.resolveAsset(BRAND.assets.emblemSvg)}"
-            alt="E-Cell MSIT"
-            style="width: 72px; height: 72px; opacity: 0.85;"
-          />
+      <div class="anim3-root">
+        <!-- SVG Tracing Mount Container -->
+        <div class="anim3-trace-container"></div>
 
-          <div style="
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: rgba(0, 200, 83, 0.1);
-            color: #00A343;
-            padding: 0.3rem 0.8rem;
-            border-radius: 9999px;
-            font-family: 'Outfit', sans-serif;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-          ">
-            <span style="width: 6px; height: 6px; border-radius: 50%; background: #00C853;"></span>
-            Animation 3 · Reserved
+        <!-- Brand Typography -->
+        <section class="anim3-typography-layer" aria-live="polite">
+          <h1 class="anim3-wordmark">
+            <span>e</span><span>Cell</span> <span>MSIT</span>
+          </h1>
+          <p class="anim3-tagline">IDEAS INSPIRE INVEST</p>
+        </section>
+
+        <!-- Top Status Bar -->
+        <header class="anim3-status-bar">
+          <div class="anim3-brand-badge">
+            <span class="anim3-status-dot"></span>
+            <span class="anim3-society-title">E-Cell MSIT</span>
+            <span class="anim3-phase-badge">Tracing Petals</span>
           </div>
+          <div class="anim3-timer-display">0.0s / 4.2s</div>
+        </header>
 
-          <h2 style="
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 1.6rem;
-            font-weight: 800;
-            color: #0A0A0A;
-            letter-spacing: -0.02em;
-            margin: 0;
-          ">
-            Kinetic Line Synthesis
-          </h2>
+        <!-- Controls Bar -->
+        <nav class="anim3-controls-bar" aria-label="Trace Animation Controls">
+          <button class="anim3-ctrl-btn primary btn-replay" title="Replay Animation (Press 'R' or Space)">
+            <svg class="anim3-ctrl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="1 4 1 10 7 10"></polyline>
+              <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+            </svg>
+            <span>Replay</span>
+            <kbd class="anim3-kbd-hint">R</kbd>
+          </button>
 
-          <p style="
-            font-family: 'Outfit', sans-serif;
-            font-size: 0.92rem;
-            color: #4B5563;
-            line-height: 1.5;
-            margin: 0;
-          ">
-            Reserved for future experimental animations (e.g. SVG path morphing, typographic kinetic transitions, or audio-reactive particles).
-          </p>
+          <button class="anim3-ctrl-btn btn-speed" title="Toggle Tracing Speed">
+            <span>⚡</span>
+            <span class="speed-label">1.0x Speed</span>
+          </button>
 
-          <a href="#/animation/1" style="
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-            background: #0A0A0A;
-            color: #FFFFFF;
-            padding: 0.6rem 1.4rem;
-            border-radius: 9999px;
-            font-family: 'Outfit', sans-serif;
-            font-size: 0.82rem;
-            font-weight: 600;
-            text-decoration: none;
-            transition: transform 0.2s ease, background-color 0.2s ease;
-          " onmouseover="this.style.transform='translateY(-1px)'; this.style.backgroundColor='#262626'" onmouseout="this.style.transform='none'; this.style.backgroundColor='#0A0A0A'">
-            <span>← Return to Animation 1</span>
-          </a>
-        </div>
+          <button class="anim3-ctrl-btn btn-motion" title="Toggle Reduced Motion">
+            <span>♿</span>
+            <span class="motion-label">${this.isReducedMotion ? 'Reduced' : 'Standard'}</span>
+          </button>
+        </nav>
       </div>
     `;
+
+    // Cache elements
+    this.traceWrap = container.querySelector('.anim3-trace-container');
+    this.wordmark = container.querySelector('.anim3-wordmark');
+    this.tagline = container.querySelector('.anim3-tagline');
+    this.phaseBadge = container.querySelector('.anim3-phase-badge');
+    this.timerDisplay = container.querySelector('.anim3-timer-display');
+
+    this.btnReplay = container.querySelector('.btn-replay');
+    this.btnSpeed = container.querySelector('.btn-speed');
+    this.speedLabel = container.querySelector('.speed-label');
+    this.btnMotion = container.querySelector('.btn-motion');
+    this.motionLabel = container.querySelector('.motion-label');
+
+    this.initEngine();
+    this.bindEvents();
+  }
+
+  initEngine() {
+    const PHASE_TITLES = {
+      'petals': 'Tracing Petal Geometry',
+      'centerE': 'Illuminating Core Lettermark',
+      'wordmark': 'Wordmark Emerges',
+      'tagline': 'Tagline Expands',
+      'hold': 'Complete Geometry'
+    };
+
+    this.engine = new TraceEngine(this.traceWrap, {
+      onPhaseChange: (phase, elapsed) => {
+        if (this.phaseBadge) {
+          this.phaseBadge.textContent = PHASE_TITLES[phase] || phase;
+        }
+
+        if (this.timerDisplay) {
+          const sec = Math.min(4.2, elapsed / 1000).toFixed(1);
+          this.timerDisplay.textContent = `${sec}s / 4.2s`;
+        }
+
+        // Sequential text reveals
+        if (phase === 'wordmark' || phase === 'tagline' || phase === 'hold') {
+          this.wordmark?.classList.add('is-revealed');
+        } else {
+          this.wordmark?.classList.remove('is-revealed');
+        }
+
+        if (phase === 'tagline' || phase === 'hold') {
+          this.tagline?.classList.add('is-revealed');
+        } else {
+          this.tagline?.classList.remove('is-revealed');
+        }
+      }
+    });
+
+    if (this.isReducedMotion) {
+      this.engine.setReducedMotion(true);
+      this.wordmark?.classList.add('is-revealed');
+      this.tagline?.classList.add('is-revealed');
+    } else {
+      this.engine.start();
+    }
+  }
+
+  replay() {
+    if (!this.engine) return;
+
+    this.wordmark?.classList.remove('is-revealed');
+    this.tagline?.classList.remove('is-revealed');
+
+    if (this.isReducedMotion) {
+      this.wordmark?.classList.add('is-revealed');
+      this.tagline?.classList.add('is-revealed');
+      this.engine.setReducedMotion(true);
+      return;
+    }
+
+    this.engine.start();
+  }
+
+  bindEvents() {
+    this.boundHandlers.onKeyDown = (e) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      if (e.key === 'r' || e.key === 'R' || e.key === ' ') {
+        e.preventDefault();
+        this.replay();
+      }
+    };
+
+    this.boundHandlers.onReplayClick = () => this.replay();
+
+    this.boundHandlers.onSpeedClick = () => {
+      this.currentSpeedIndex = (this.currentSpeedIndex + 1) % this.speedConfigs.length;
+      const spd = this.speedConfigs[this.currentSpeedIndex];
+      if (this.engine) this.engine.setSpeed(spd);
+      if (this.speedLabel) this.speedLabel.textContent = `${spd.toFixed(1)}x Speed`;
+    };
+
+    this.boundHandlers.onMotionClick = () => {
+      this.isReducedMotion = !this.isReducedMotion;
+      if (this.motionLabel) {
+        this.motionLabel.textContent = this.isReducedMotion ? 'Reduced' : 'Standard';
+      }
+      if (this.isReducedMotion) {
+        this.engine.setReducedMotion(true);
+        this.wordmark?.classList.add('is-revealed');
+        this.tagline?.classList.add('is-revealed');
+      } else {
+        this.engine.setReducedMotion(false);
+        this.replay();
+      }
+    };
+
+    window.addEventListener('keydown', this.boundHandlers.onKeyDown);
+    this.btnReplay?.addEventListener('click', this.boundHandlers.onReplayClick);
+    this.btnSpeed?.addEventListener('click', this.boundHandlers.onSpeedClick);
+    this.btnMotion?.addEventListener('click', this.boundHandlers.onMotionClick);
   }
 
   unmount() {
+    window.removeEventListener('keydown', this.boundHandlers.onKeyDown);
+
+    if (this.engine) {
+      this.engine.destroy();
+      this.engine = null;
+    }
+
     if (this.container) {
       this.container.innerHTML = '';
       this.container = null;

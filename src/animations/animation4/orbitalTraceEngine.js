@@ -134,19 +134,19 @@ export class OrbitalTraceEngine {
           <!-- Upper Green Segment Paths -->
           <g id="orb-upper-group">
             ${SVG_EMBLEM_PATHS.upper.map((d, i) => `
-              <path class="orb-path orb-upper-path" data-index="${i}" d="${d}" />
+              <path class="orb-path orb-upper-path" data-index="${i}" d="${d}" fill="none" fill-opacity="0" stroke="none" />
             `).join('')}
           </g>
 
           <!-- Lower Blue Segment Paths -->
           <g id="orb-lower-group">
             ${SVG_EMBLEM_PATHS.lower.map((d, i) => `
-              <path class="orb-path orb-lower-path" data-index="${i}" d="${d}" />
+              <path class="orb-path orb-lower-path" data-index="${i}" d="${d}" fill="none" fill-opacity="0" stroke="none" />
             `).join('')}
           </g>
 
           <!-- Central Lowercase 'e' Path -->
-          <path class="orb-path orb-center-e" d="${SVG_EMBLEM_PATHS.centerE}" />
+          <path class="orb-path orb-center-e" d="${SVG_EMBLEM_PATHS.centerE}" fill="none" fill-opacity="0" stroke="none" />
 
           <!-- Traveling Energy Spark Heads -->
           <g id="orb-sparks-group"></g>

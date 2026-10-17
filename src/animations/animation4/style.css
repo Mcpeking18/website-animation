@@ -59,9 +59,10 @@
 }
 
 .orb-path {
+  fill: none;
+  fill-opacity: 0;
   stroke-linecap: round;
   stroke-linejoin: round;
-  transition: fill-opacity 0.35s ease;
 }
 
 /* Brand Typography Layer */

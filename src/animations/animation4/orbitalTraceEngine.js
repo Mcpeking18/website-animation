@@ -15,13 +15,14 @@ import { BRAND } from '../../shared/brand.js';
 import { SVG_EMBLEM_PATHS } from '../animation3/traceEngine.js';
 
 export const TIMING_ORBITAL_TRACE = {
-  atmosphereEnd: 750,      // 0.0 - 0.75s: Ambient background & orbital trails start moving
-  emblemTraceEnd: 2600,    // 0.75 - 2.6s: Upper green & lower blue SVG paths trace with sparks & fill
-  centerEEnd: 3300,        // 2.6 - 3.3s: Central lowercase 'e' traces & fills cleanly
-  logoResolveEnd: 3600,    // 3.3 - 3.6s: Emblem settles, subtle glow swell settles into background
-  wordmarkEnd: 4250,       // 3.6 - 4.25s: "eCell MSIT" wordmark reveals
-  taglineEnd: 4900,        // 4.25 - 4.9s: "IDEAS INSPIRE INVEST" reveals
-  totalDuration: 4900      // 4.9s+: Permanent ambient orbital hold
+  traceStart: 350,         // 0.35s: SVG geometric path tracing begins
+  orbitStart: 1250,        // 1.25s: Orbital comet trail awakens a bit later
+  emblemTraceEnd: 2700,    // 0.35 - 2.7s: Upper green & lower blue SVG paths trace with sparks & fill
+  centerEEnd: 3400,        // 2.7 - 3.4s: Central lowercase 'e' traces & fills cleanly
+  logoResolveEnd: 3750,    // 3.4 - 3.75s: Emblem settles, subtle glow swell settles into background
+  wordmarkEnd: 4400,       // 3.75 - 4.4s: "eCell MSIT" wordmark reveals
+  taglineEnd: 5050,        // 4.4 - 5.05s: "IDEAS INSPIRE INVEST" reveals
+  totalDuration: 5050      // 5.05s+: Permanent ambient orbital hold
 };
 
 export class OrbitalTraceEngine {
@@ -36,7 +37,7 @@ export class OrbitalTraceEngine {
     this.height = 0;
     this.centerX = 0;
     this.centerY = 0;
-    this.emblemRadius = 110;
+    this.emblemRadius = 140;
 
     this.startTime = 0;
     this.elapsed = 0;
@@ -50,6 +51,7 @@ export class OrbitalTraceEngine {
     this.ambientParticles = [];
     this.orbitalTrail = [];
     this.orbitAngle = 0;
+    this.orbitAlpha = 0; // Starts at 0, awakens a bit later
     this.stardustDroplets = [];
 
     // Glow intensity state
@@ -201,17 +203,19 @@ export class OrbitalTraceEngine {
 
     this.centerX = this.width / 2;
     const isMobile = displayWidth < 640;
-    const emblemOffset = isMobile ? 48 * this.dpr : 62 * this.dpr;
+    // Offset emblem slightly upward to balance the grander emblem and typography
+    const emblemOffset = isMobile ? 54 * this.dpr : 72 * this.dpr;
     this.centerY = this.height / 2 - emblemOffset;
 
-    const targetEmblemDiameter = Math.min(displayWidth * 0.44, isMobile ? 180 : 215);
+    // Make the animation noticeably bigger and more impactful
+    const targetEmblemDiameter = Math.min(displayWidth * 0.52, isMobile ? 220 : 280);
     this.emblemRadius = (targetEmblemDiameter / 2) * this.dpr;
 
     this.initAtmosphere();
   }
 
   initAtmosphere() {
-    // 1. Ambient Background Micro-particles (40 subtle green & blue drifting specks)
+    // 1. Ambient Background Micro-particles (42 subtle green & blue drifting specks)
     this.ambientParticles = [];
     const ambientCount = 42;
     for (let i = 0; i < ambientCount; i++) {
@@ -220,7 +224,7 @@ export class OrbitalTraceEngine {
         y: Math.random() * this.height,
         vx: (Math.random() - 0.5) * 0.32 * this.dpr,
         vy: (Math.random() - 0.5) * 0.32 * this.dpr,
-        radius: (0.7 + Math.random() * 1.5) * this.dpr,
+        radius: (0.8 + Math.random() * 1.6) * this.dpr,
         color: Math.random() > 0.5 ? BRAND.colors.green : BRAND.colors.blue,
         alpha: 0.14 + Math.random() * 0.22,
         pulseSpeed: 0.012 + Math.random() * 0.02,
@@ -228,10 +232,10 @@ export class OrbitalTraceEngine {
       });
     }
 
-    // 2. Single Blue Orbital Comet Trail
+    // 2. Single Coordinated Blue & Green Orbital Comet Trail
     // Tilted gracefully at +18 deg (~ +0.31 rad) around emblem
     this.orbitalTrail = [];
-    const trailCount = 30;
+    const trailCount = 32;
     for (let i = 0; i < trailCount; i++) {
       const frac = i / trailCount;
       const isHead = i === trailCount - 1;
@@ -240,8 +244,9 @@ export class OrbitalTraceEngine {
         distX: this.emblemRadius * 1.45,
         distY: this.emblemRadius * 0.90,
         tilt: 0.31,
-        baseRadius: (1.1 + frac * 2.5) * this.dpr,
-        color: i % 3 === 0 ? '#60A5FA' : BRAND.colors.blue,
+        baseRadius: (1.2 + frac * 2.8) * this.dpr,
+        // Alternating authentic brand green and brand blue!
+        color: i % 2 === 0 ? BRAND.colors.green : BRAND.colors.blue,
         alpha: Math.pow(frac, 1.3) * 0.95,
         isHead: isHead
       });
@@ -325,8 +330,14 @@ export class OrbitalTraceEngine {
   }
 
   update(elapsed) {
-    // 1. Advance Orbital Angle smoothly
-    this.orbitAngle += 0.025 * this.speed;
+    // 1. Advance Orbital Angle smoothly & awaken orbit a bit late
+    if (elapsed < TIMING_ORBITAL_TRACE.orbitStart) {
+      this.orbitAlpha = 0;
+    } else {
+      // Fade in gracefully over 450ms once awakened
+      this.orbitAlpha = Math.min(1.0, (elapsed - TIMING_ORBITAL_TRACE.orbitStart) / 450);
+      this.orbitAngle += 0.025 * this.speed;
+    }
 
     // 2. Update Ambient Floating Micro-particles
     for (const amb of this.ambientParticles) {
@@ -338,8 +349,8 @@ export class OrbitalTraceEngine {
       if (amb.y > this.height) amb.y = 0;
     }
 
-    // 3. Emit occasional fine blue stardust droplets from orbital comet head
-    if (Math.random() < 0.22 * this.speed) {
+    // 3. Emit occasional fine green/blue stardust droplets from orbital comet head once active
+    if (this.orbitAlpha > 0.3 && Math.random() < 0.22 * this.speed) {
       const head = this.orbitalTrail[this.orbitalTrail.length - 1];
       if (head) {
         const curA = this.orbitAngle + head.offsetAngle;
@@ -353,8 +364,8 @@ export class OrbitalTraceEngine {
           y: this.centerY + rotY,
           vx: (Math.random() - 0.5) * 0.6 * this.dpr,
           vy: (Math.random() - 0.5) * 0.6 * this.dpr,
-          radius: (0.8 + Math.random() * 1.2) * this.dpr,
-          color: Math.random() > 0.4 ? BRAND.colors.blue : '#60A5FA',
+          radius: (0.8 + Math.random() * 1.3) * this.dpr,
+          color: Math.random() > 0.5 ? BRAND.colors.green : BRAND.colors.blue,
           alpha: 0.85,
           life: 1.0,
           decay: 0.025 + Math.random() * 0.02
@@ -374,11 +385,11 @@ export class OrbitalTraceEngine {
     }
 
     // 4. Glow Alpha Lifecycle Curve
-    if (elapsed < TIMING_ORBITAL_TRACE.atmosphereEnd) {
-      this.ambientGlowAlpha = (elapsed / TIMING_ORBITAL_TRACE.atmosphereEnd) * 0.25;
+    if (elapsed < TIMING_ORBITAL_TRACE.traceStart) {
+      this.ambientGlowAlpha = 0.15;
       this.glowSwellAlpha = 0;
     } else if (elapsed < TIMING_ORBITAL_TRACE.centerEEnd) {
-      this.ambientGlowAlpha = 0.25 + (elapsed / TIMING_ORBITAL_TRACE.centerEEnd) * 0.35;
+      this.ambientGlowAlpha = 0.2 + (elapsed / TIMING_ORBITAL_TRACE.centerEEnd) * 0.35;
       this.glowSwellAlpha = 0;
     } else if (elapsed < TIMING_ORBITAL_TRACE.logoResolveEnd) {
       // Swell peak when emblem locks in
@@ -392,8 +403,8 @@ export class OrbitalTraceEngine {
     }
 
     // 5. SVG Tracing Execution
-    // Phase B: Upper & Lower Petal Tracing (starts after atmosphere, 750ms -> 2600ms)
-    const traceStart = TIMING_ORBITAL_TRACE.atmosphereEnd;
+    // Petal tracing starts cleanly at traceStart (350ms)
+    const traceStart = TIMING_ORBITAL_TRACE.traceStart;
     const traceDuration = TIMING_ORBITAL_TRACE.emblemTraceEnd - traceStart;
 
     if (elapsed >= traceStart) {
@@ -437,7 +448,7 @@ export class OrbitalTraceEngine {
       }
     }
 
-    // Phase C: Central Lowercase 'e' Tracing (2600ms -> 3300ms)
+    // Central Lowercase 'e' Tracing
     const centerStart = TIMING_ORBITAL_TRACE.emblemTraceEnd;
     const centerDuration = TIMING_ORBITAL_TRACE.centerEEnd - centerStart;
 
@@ -471,10 +482,12 @@ export class OrbitalTraceEngine {
     }
 
     // 6. Notify Callbacks of Phase Changes
-    if (elapsed < TIMING_ORBITAL_TRACE.atmosphereEnd) {
+    if (elapsed < TIMING_ORBITAL_TRACE.traceStart) {
       this.callbacks.onPhaseChange?.('atmosphere', elapsed);
-    } else if (elapsed < TIMING_ORBITAL_TRACE.emblemTraceEnd) {
+    } else if (elapsed < TIMING_ORBITAL_TRACE.orbitStart) {
       this.callbacks.onPhaseChange?.('tracing', elapsed);
+    } else if (elapsed < TIMING_ORBITAL_TRACE.emblemTraceEnd) {
+      this.callbacks.onPhaseChange?.('orbitalTracing', elapsed);
     } else if (elapsed < TIMING_ORBITAL_TRACE.centerEEnd) {
       this.callbacks.onPhaseChange?.('centerE', elapsed);
     } else if (elapsed < TIMING_ORBITAL_TRACE.logoResolveEnd) {
@@ -568,39 +581,41 @@ export class OrbitalTraceEngine {
       ctx.restore();
     }
 
-    // 5. Single Blue Orbital Comet Trail (Luminous celestial motion)
-    ctx.save();
-    for (const orb of this.orbitalTrail) {
-      const curAngle = this.orbitAngle + orb.offsetAngle;
-      const rawX = Math.cos(curAngle) * orb.distX;
-      const rawY = Math.sin(curAngle) * orb.distY;
+    // 5. Single Blue & Green Orbital Comet Trail (Luminous celestial motion)
+    if (this.orbitAlpha > 0.01) {
+      ctx.save();
+      for (const orb of this.orbitalTrail) {
+        const curAngle = this.orbitAngle + orb.offsetAngle;
+        const rawX = Math.cos(curAngle) * orb.distX;
+        const rawY = Math.sin(curAngle) * orb.distY;
 
-      const rotX = rawX * Math.cos(orb.tilt) - rawY * Math.sin(orb.tilt);
-      const rotY = rawX * Math.sin(orb.tilt) + rawY * Math.cos(orb.tilt);
+        const rotX = rawX * Math.cos(orb.tilt) - rawY * Math.sin(orb.tilt);
+        const rotY = rawX * Math.sin(orb.tilt) + rawY * Math.cos(orb.tilt);
 
-      const orbX = this.centerX + rotX;
-      const orbY = this.centerY + rotY;
+        const orbX = this.centerX + rotX;
+        const orbY = this.centerY + rotY;
 
-      ctx.fillStyle = orb.isHead ? '#FFFFFF' : orb.color;
-      ctx.globalAlpha = orb.alpha;
+        ctx.fillStyle = orb.isHead ? '#FFFFFF' : orb.color;
+        ctx.globalAlpha = orb.alpha * this.orbitAlpha;
 
-      // Shadow halo for comet body
-      ctx.shadowColor = '#0072FF';
-      ctx.shadowBlur = (orb.isHead ? 20 : 9) * this.dpr;
+        // Shadow halo for comet body
+        ctx.shadowColor = orb.color;
+        ctx.shadowBlur = (orb.isHead ? 20 : 9) * this.dpr;
 
-      ctx.beginPath();
-      ctx.arc(orbX, orbY, orb.baseRadius, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Extra halo for comet head
-      if (orb.isHead) {
         ctx.beginPath();
-        ctx.fillStyle = '#0072FF';
-        ctx.globalAlpha = 0.55;
-        ctx.arc(orbX, orbY, orb.baseRadius * 1.85, 0, Math.PI * 2);
+        ctx.arc(orbX, orbY, orb.baseRadius, 0, Math.PI * 2);
         ctx.fill();
+
+        // Extra halo for comet head
+        if (orb.isHead) {
+          ctx.beginPath();
+          ctx.fillStyle = '#0072FF';
+          ctx.globalAlpha = 0.55 * this.orbitAlpha;
+          ctx.arc(orbX, orbY, orb.baseRadius * 1.85, 0, Math.PI * 2);
+          ctx.fill();
+        }
       }
+      ctx.restore();
     }
-    ctx.restore();
   }
 }

@@ -94,8 +94,9 @@ export class Animation4Module {
 
   initEngine() {
     const PHASE_TITLES = {
-      'atmosphere': 'Phase A · Orbital Atmosphere',
+      'atmosphere': 'Phase A · Atmosphere Awakens',
       'tracing': 'Phase B · Tracing SVG Petals',
+      'orbitalTracing': 'Phase B · Orbital Energy Arrives',
       'centerE': 'Phase C · Tracing Lettermark',
       'resolving': 'Phase C · Emblem Resolves',
       'wordmark': 'Phase D · Wordmark Emerges',
@@ -111,7 +112,7 @@ export class Animation4Module {
 
         if (this.timerDisplay && typeof elapsed === 'number') {
           const sec = (elapsed / 1000).toFixed(1);
-          this.timerDisplay.textContent = `${sec}s / 4.9s`;
+          this.timerDisplay.textContent = `${sec}s / 5.1s`;
         }
 
         // Trigger typography reveals sequentially

@@ -6,6 +6,7 @@
 import { animation1 } from './animations/animation1/index.js';
 import { animation2 } from './animations/animation2/index.js';
 import { animation3 } from './animations/animation3/index.js';
+import { animation4 } from './animations/animation4/index.js';
 
 export const ANIMATIONS = [
   {
@@ -37,6 +38,16 @@ export const ANIMATIONS = [
     description: 'Luminous electric path tracing along authentic SVG geometric contours',
     status: 'active',
     module: animation3,
+  },
+  {
+    id: '4',
+    hash: '#/animation/4',
+    aliases: ['#/4', '#/orbital-trace', '#/orbital'],
+    title: '04 · Orbital Trace',
+    shortTitle: 'Orbital Trace',
+    description: 'Cinematic dual-tone orbital comets framing precise SVG geometric tracing',
+    status: 'active',
+    module: animation4,
   },
 ];
 

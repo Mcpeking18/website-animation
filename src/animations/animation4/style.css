@@ -102,16 +102,11 @@
   transform: translateY(0);
 }
 
-.anim4-wordmark span:nth-child(1) {
-  color: var(--color-brand-green, #00C853);
-}
-
-.anim4-wordmark span:nth-child(2) {
-  color: var(--color-brand-blue, #0072FF);
+.anim4-wordmark span {
+  color: var(--color-text-main, #F4F4F4);
 }
 
 .anim4-wordmark span:nth-child(3) {
-  color: var(--color-text-main, #F4F4F4);
   margin-left: 0.35rem;
 }
 

@@ -48,10 +48,8 @@ export class OrbitalTraceEngine {
 
     // Atmospheric elements
     this.ambientParticles = [];
-    this.orbitalTrail1 = [];
-    this.orbitalTrail2 = [];
-    this.orbitAngle1 = 0;
-    this.orbitAngle2 = Math.PI * 0.75;
+    this.orbitalTrail = [];
+    this.orbitAngle = 0;
     this.stardustDroplets = [];
 
     // Glow intensity state
@@ -215,8 +213,8 @@ export class OrbitalTraceEngine {
   initAtmosphere() {
     // 1. Ambient Background Micro-particles (40 subtle green & blue drifting specks)
     this.ambientParticles = [];
-    const count = 42;
-    for (let i = 0; i < count; i++) {
+    const ambientCount = 42;
+    for (let i = 0; i < ambientCount; i++) {
       this.ambientParticles.push({
         x: Math.random() * this.width,
         y: Math.random() * this.height,
@@ -230,42 +228,25 @@ export class OrbitalTraceEngine {
       });
     }
 
-    // 2. Dual Coordinated Orbital Comet Trails
-    // Trail 1: Tilted at -18 deg (~ -0.31 rad), Green-dominated comet head
-    this.orbitalTrail1 = [];
-    const count1 = 28;
-    for (let i = 0; i < count1; i++) {
-      const frac = i / count1;
-      this.orbitalTrail1.push({
+    // 2. Single Blue Orbital Comet Trail
+    // Tilted gracefully at +18 deg (~ +0.31 rad) around emblem
+    this.orbitalTrail = [];
+    const trailCount = 30;
+    for (let i = 0; i < trailCount; i++) {
+      const frac = i / trailCount;
+      const isHead = i === trailCount - 1;
+      this.orbitalTrail.push({
         offsetAngle: frac * Math.PI * 0.95, // Segmented sweeping arc
-        distX: this.emblemRadius * 1.38,
+        distX: this.emblemRadius * 1.45,
         distY: this.emblemRadius * 0.90,
-        tilt: -0.31,
-        baseRadius: (1.1 + frac * 2.2) * this.dpr,
-        color: i % 2 === 0 ? BRAND.colors.green : BRAND.colors.blue,
-        alpha: Math.pow(frac, 1.4) * 0.95,
-        isHead: i === count1 - 1
+        tilt: 0.31,
+        baseRadius: (1.1 + frac * 2.5) * this.dpr,
+        color: i % 3 === 0 ? '#60A5FA' : BRAND.colors.blue,
+        alpha: Math.pow(frac, 1.3) * 0.95,
+        isHead: isHead
       });
     }
 
-    // Trail 2: Tilted at +22 deg (~ +0.38 rad), Blue-dominated comet head
-    this.orbitalTrail2 = [];
-    const count2 = 24;
-    for (let i = 0; i < count2; i++) {
-      const frac = i / count2;
-      this.orbitalTrail2.push({
-        offsetAngle: frac * Math.PI * 0.88,
-        distX: this.emblemRadius * 1.54,
-        distY: this.emblemRadius * 0.82,
-        tilt: 0.38,
-        baseRadius: (1.0 + frac * 2.0) * this.dpr,
-        color: i % 2 === 0 ? BRAND.colors.blue : BRAND.colors.green,
-        alpha: Math.pow(frac, 1.4) * 0.90,
-        isHead: i === count2 - 1
-      });
-    }
-
-    // 3. Stardust droplets shed from orbital heads
     this.stardustDroplets = [];
   }
 
@@ -344,9 +325,8 @@ export class OrbitalTraceEngine {
   }
 
   update(elapsed) {
-    // 1. Advance Orbital Angles smoothly
-    this.orbitAngle1 += 0.026 * this.speed;
-    this.orbitAngle2 += 0.022 * this.speed;
+    // 1. Advance Orbital Angle smoothly
+    this.orbitAngle += 0.025 * this.speed;
 
     // 2. Update Ambient Floating Micro-particles
     for (const amb of this.ambientParticles) {
@@ -358,15 +338,15 @@ export class OrbitalTraceEngine {
       if (amb.y > this.height) amb.y = 0;
     }
 
-    // 3. Emit occasional fine stardust droplets from orbital comet heads
+    // 3. Emit occasional fine blue stardust droplets from orbital comet head
     if (Math.random() < 0.22 * this.speed) {
-      const head1 = this.orbitalTrail1[this.orbitalTrail1.length - 1];
-      if (head1) {
-        const curA = this.orbitAngle1 + head1.offsetAngle;
-        const rx = Math.cos(curA) * head1.distX;
-        const ry = Math.sin(curA) * head1.distY;
-        const rotX = rx * Math.cos(head1.tilt) - ry * Math.sin(head1.tilt);
-        const rotY = rx * Math.sin(head1.tilt) + ry * Math.cos(head1.tilt);
+      const head = this.orbitalTrail[this.orbitalTrail.length - 1];
+      if (head) {
+        const curA = this.orbitAngle + head.offsetAngle;
+        const rx = Math.cos(curA) * head.distX;
+        const ry = Math.sin(curA) * head.distY;
+        const rotX = rx * Math.cos(head.tilt) - ry * Math.sin(head.tilt);
+        const rotY = rx * Math.sin(head.tilt) + ry * Math.cos(head.tilt);
 
         this.stardustDroplets.push({
           x: this.centerX + rotX,
@@ -374,8 +354,8 @@ export class OrbitalTraceEngine {
           vx: (Math.random() - 0.5) * 0.6 * this.dpr,
           vy: (Math.random() - 0.5) * 0.6 * this.dpr,
           radius: (0.8 + Math.random() * 1.2) * this.dpr,
-          color: Math.random() > 0.5 ? BRAND.colors.green : BRAND.colors.blue,
-          alpha: 0.8,
+          color: Math.random() > 0.4 ? BRAND.colors.blue : '#60A5FA',
+          alpha: 0.85,
           life: 1.0,
           decay: 0.025 + Math.random() * 0.02
         });
@@ -588,44 +568,39 @@ export class OrbitalTraceEngine {
       ctx.restore();
     }
 
-    // 5. Dual Orbital Comet Trails (Luminous, continuous celestial motion)
-    const renderOrbit = (trail, baseAngle, speedMult) => {
-      ctx.save();
-      for (const orb of trail) {
-        const curAngle = baseAngle + orb.offsetAngle;
-        const rawX = Math.cos(curAngle) * orb.distX;
-        const rawY = Math.sin(curAngle) * orb.distY;
+    // 5. Single Blue Orbital Comet Trail (Luminous celestial motion)
+    ctx.save();
+    for (const orb of this.orbitalTrail) {
+      const curAngle = this.orbitAngle + orb.offsetAngle;
+      const rawX = Math.cos(curAngle) * orb.distX;
+      const rawY = Math.sin(curAngle) * orb.distY;
 
-        const rotX = rawX * Math.cos(orb.tilt) - rawY * Math.sin(orb.tilt);
-        const rotY = rawX * Math.sin(orb.tilt) + rawY * Math.cos(orb.tilt);
+      const rotX = rawX * Math.cos(orb.tilt) - rawY * Math.sin(orb.tilt);
+      const rotY = rawX * Math.sin(orb.tilt) + rawY * Math.cos(orb.tilt);
 
-        const orbX = this.centerX + rotX;
-        const orbY = this.centerY + rotY;
+      const orbX = this.centerX + rotX;
+      const orbY = this.centerY + rotY;
 
-        ctx.fillStyle = orb.isHead ? '#FFFFFF' : orb.color;
-        ctx.globalAlpha = orb.alpha;
+      ctx.fillStyle = orb.isHead ? '#FFFFFF' : orb.color;
+      ctx.globalAlpha = orb.alpha;
 
-        // Shadow halo for comet body
-        ctx.shadowColor = orb.color;
-        ctx.shadowBlur = (orb.isHead ? 16 : 8) * this.dpr;
+      // Shadow halo for comet body
+      ctx.shadowColor = '#0072FF';
+      ctx.shadowBlur = (orb.isHead ? 20 : 9) * this.dpr;
 
+      ctx.beginPath();
+      ctx.arc(orbX, orbY, orb.baseRadius, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Extra halo for comet head
+      if (orb.isHead) {
         ctx.beginPath();
-        ctx.arc(orbX, orbY, orb.baseRadius, 0, Math.PI * 2);
+        ctx.fillStyle = '#0072FF';
+        ctx.globalAlpha = 0.55;
+        ctx.arc(orbX, orbY, orb.baseRadius * 1.85, 0, Math.PI * 2);
         ctx.fill();
-
-        // Extra halo for comet head
-        if (orb.isHead) {
-          ctx.beginPath();
-          ctx.fillStyle = orb.color;
-          ctx.globalAlpha = 0.5;
-          ctx.arc(orbX, orbY, orb.baseRadius * 1.8, 0, Math.PI * 2);
-          ctx.fill();
-        }
       }
-      ctx.restore();
-    };
-
-    renderOrbit(this.orbitalTrail1, this.orbitAngle1, 1.0);
-    renderOrbit(this.orbitalTrail2, this.orbitAngle2, 0.9);
+    }
+    ctx.restore();
   }
 }

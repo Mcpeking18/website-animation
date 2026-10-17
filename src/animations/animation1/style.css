@@ -1,0 +1,241 @@
+/* ==========================================================================
+  Animation 1: Particle Convergence with Cinematic Glow Styles
+  ========================================================================== */
+
+.anim1-root {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-bg, #F4F4F4);
+  overflow: hidden;
+}
+
+/* Fullscreen Particle Canvas */
+.anim1-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 1;
+  cursor: crosshair;
+}
+
+/* Brand Typography Layer */
+.anim1-typography-layer {
+  position: absolute;
+  top: calc(50% + 72px);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  z-index: 2;
+  pointer-events: none;
+  width: 90%;
+  max-width: 650px;
+}
+
+/* Wordmark: eCell MSIT */
+.anim1-wordmark {
+  font-family: var(--font-display, 'Plus Jakarta Sans', 'Outfit', sans-serif);
+  font-size: clamp(2.2rem, 5.2vw, 3.4rem);
+  font-weight: 800;
+  color: #0A0A0A;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  margin-bottom: 0.45rem;
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.anim1-wordmark.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Tagline: IDEAS INSPIRE INVEST */
+.anim1-tagline {
+  font-family: var(--font-tagline, 'Outfit', 'Plus Jakarta Sans', sans-serif);
+  font-size: clamp(0.72rem, 1.8vw, 0.95rem);
+  font-weight: 600;
+  color: #4B5563;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), letter-spacing 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform, letter-spacing;
+}
+
+.anim1-tagline.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+  letter-spacing: 0.36em;
+}
+
+/* Animation 1 Status Header */
+.anim1-status-bar {
+  position: absolute;
+  top: 1.25rem;
+  left: 1.5rem;
+  right: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.anim1-brand-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 0.4rem 0.95rem;
+  border-radius: 9999px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+.anim1-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #00C853;
+  box-shadow: 0 0 10px rgba(0, 200, 83, 0.6);
+  animation: anim1-pulse-dot 2s infinite ease-in-out;
+}
+
+@keyframes anim1-pulse-dot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.3); opacity: 0.7; }
+}
+
+.anim1-society-title {
+  font-family: var(--font-display, 'Plus Jakarta Sans', sans-serif);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #0A0A0A;
+  letter-spacing: -0.01em;
+}
+
+.anim1-phase-badge {
+  font-family: var(--font-tagline, 'Outfit', sans-serif);
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: #0072FF;
+  background: rgba(0, 114, 255, 0.08);
+  padding: 0.2rem 0.55rem;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.anim1-timer-display {
+  font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #4B5563;
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 0.4rem 0.85rem;
+  border-radius: 9999px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+/* Local Controls Bar */
+.anim1-controls-bar {
+  position: absolute;
+  bottom: 5.25rem; /* Sits cleanly above the lab switcher bar */
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  padding: 0.35rem 0.5rem;
+  border-radius: 9999px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+  pointer-events: auto;
+}
+
+.anim1-ctrl-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.38rem 0.75rem;
+  border-radius: 9999px;
+  font-family: var(--font-tagline, 'Outfit', sans-serif);
+  font-size: 0.76rem;
+  font-weight: 600;
+  border: none;
+  background: transparent;
+  color: #4B5563;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+
+.anim1-ctrl-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #0A0A0A;
+}
+
+.anim1-ctrl-btn.primary {
+  background: #0A0A0A;
+  color: #FFFFFF;
+}
+
+.anim1-ctrl-btn.primary:hover {
+  background: #262626;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.anim1-ctrl-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.anim1-kbd-hint {
+  font-family: 'SF Mono', monospace;
+  font-size: 0.65rem;
+  background: rgba(255, 255, 255, 0.22);
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+}
+
+/* Timeline bar */
+.anim1-timeline-bar-wrap {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: rgba(0, 0, 0, 0.04);
+  z-index: 10;
+}
+
+.anim1-timeline-progress {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #00C853, #0072FF);
+  transition: width 0.08s linear;
+}

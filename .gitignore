@@ -12,6 +12,7 @@ dist
 dist-ssr
 *.local
 *.zip
+eCellwebsite2026-27/
 
 # Editor directories and files
 .vscode/*

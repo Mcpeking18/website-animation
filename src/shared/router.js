@@ -1,11 +1,11 @@
 /**
- * E-Cell MSIT Animation Lab — Lightweight Hash Router & Selector
- * - Handles navigation between animation pages without server configuration
- * - Manages strict lifecycle (clean unmount of previous animation, clean mount of next)
- * - Renders a sleek, unobtrusive floating selector pill
+ * E-Cell MSIT — Router & Presentation Orchestrator
+ * - Seamlessly routes between the Main Showcase (Final Animation Ecell)
+ *   and the Testing Phase concepts (Particle, Pulse, Trace)
+ * - Strict lifecycle management (clean unmount / mount)
  */
 
-import { ANIMATIONS, resolveAnimation } from '../registry.js';
+import { FINAL_ANIMATION, TESTING_ANIMATIONS, resolveAnimation } from '../registry.js';
 
 export class Router {
   constructor(viewportContainer, selectorContainer) {
@@ -13,37 +13,67 @@ export class Router {
     this.selectorContainer = selectorContainer;
     this.currentAnimation = null;
 
-    this.renderSelector();
     this.bindEvents();
     this.handleRoute();
   }
 
-  renderSelector() {
+  renderSelector(activeAnimation) {
     if (!this.selectorContainer) return;
 
-    this.selectorContainer.innerHTML = `
-      <nav class="lab-switcher-nav" aria-label="Animation Lab Selector">
-        <div class="lab-switcher-title">
-          <span class="lab-switcher-sparkle">✦</span>
-          <span class="lab-switcher-text">Animation Lab</span>
-        </div>
-        <div class="lab-switcher-pills">
-          ${ANIMATIONS.map((anim) => `
+    const isFinal = activeAnimation.id === 'final';
+
+    if (isFinal) {
+      // In Final mode: clean, executive presentation bar with subtle testing link
+      this.selectorContainer.innerHTML = `
+        <nav class="lab-switcher-nav final-mode-nav" aria-label="Official Animation Controls">
+          <div class="lab-switcher-title">
+            <span class="lab-switcher-sparkle">✦</span>
+            <span class="lab-switcher-text">Final Animation Ecell</span>
+          </div>
+          <div class="lab-switcher-pills">
             <a
-              href="${anim.hash}"
-              class="lab-pill-btn"
-              data-id="${anim.id}"
-              title="${anim.description}"
+              href="#/testing/1"
+              class="lab-pill-btn testing-link"
+              title="Review earlier prototype concepts (Particle, Pulse, Trace)"
             >
-              <span class="pill-dot"></span>
-              <span class="pill-name">${anim.shortTitle}</span>
-              ${anim.status === 'in-dev' ? '<span class="pill-tag dev">WIP</span>' : ''}
-              ${anim.status === 'planned' ? '<span class="pill-tag plan">Idea</span>' : ''}
+              <span class="pill-dot testing"></span>
+              <span class="pill-name">🧪 Testing Phase</span>
             </a>
-          `).join('')}
-        </div>
-      </nav>
-    `;
+          </div>
+        </nav>
+      `;
+    } else {
+      // In Testing Phase mode: full switcher showing test concepts + link back to Final
+      this.selectorContainer.innerHTML = `
+        <nav class="lab-switcher-nav testing-mode-nav" aria-label="Testing Phase Selector">
+          <div class="lab-switcher-title">
+            <span class="lab-switcher-sparkle">🧪</span>
+            <span class="lab-switcher-text">Testing Phase</span>
+          </div>
+          <div class="lab-switcher-pills">
+            ${TESTING_ANIMATIONS.slice(0, 3).map((anim) => `
+              <a
+                href="${anim.hash}"
+                class="lab-pill-btn ${anim.id === activeAnimation.id ? 'active' : ''}"
+                data-id="${anim.id}"
+                title="${anim.description}"
+              >
+                <span class="pill-dot"></span>
+                <span class="pill-name">${anim.shortTitle}</span>
+              </a>
+            `).join('')}
+            <a
+              href="#/final"
+              class="lab-pill-btn final-link-btn"
+              title="Return to the official Final Animation"
+            >
+              <span class="pill-dot final"></span>
+              <span class="pill-name">★ Final Animation</span>
+            </a>
+          </div>
+        </nav>
+      `;
+    }
   }
 
   bindEvents() {
@@ -88,23 +118,13 @@ export class Router {
     }
 
     // 3. Update Document Title
-    document.title = `E-Cell MSIT Lab — ${targetAnimation.title}`;
+    if (targetAnimation.id === 'final') {
+      document.title = 'Final Animation Ecell';
+    } else {
+      document.title = `E-Cell MSIT Lab — ${targetAnimation.title}`;
+    }
 
-    // 4. Update selector active pill
-    this.updateSelectorUI(targetAnimation.id);
-  }
-
-  updateSelectorUI(activeId) {
-    if (!this.selectorContainer) return;
-    const pills = this.selectorContainer.querySelectorAll('.lab-pill-btn');
-    pills.forEach((pill) => {
-      if (pill.getAttribute('data-id') === activeId) {
-        pill.classList.add('active');
-        pill.setAttribute('aria-current', 'page');
-      } else {
-        pill.classList.remove('active');
-        pill.removeAttribute('aria-current');
-      }
-    });
+    // 4. Update selector UI
+    this.renderSelector(targetAnimation);
   }
 }

@@ -1,0 +1,308 @@
+/* ==========================================================================
+  Animation 4: Orbital Trace (Cinematic Orbital Comets + SVG Tracing) Styles
+  ========================================================================== */
+
+.anim4-root {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-bg, #0B1220);
+  overflow: hidden;
+}
+
+/* Background Canvas Layer (Renders deep gradient, ambient particles, & dual orbital comet trails) */
+.anim4-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* SVG Emblem Container (Layered directly above canvas) */
+.anim4-svg-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.orbital-trace-wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.orbital-trace-svg {
+  position: absolute;
+  top: calc(50% - 72px);
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: clamp(230px, 48vw, 290px);
+  height: auto;
+  overflow: visible;
+  filter: drop-shadow(0 12px 36px rgba(0, 0, 0, 0.75));
+}
+
+.orb-path {
+  fill: none;
+  fill-opacity: 0;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Brand Typography Layer */
+.anim4-typography-layer {
+  position: absolute;
+  top: calc(50% + 88px);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  z-index: 5;
+  pointer-events: none;
+  width: 90%;
+  max-width: 680px;
+}
+
+/* Wordmark: eCell MSIT */
+.anim4-wordmark {
+  font-family: var(--font-display, 'Plus Jakarta Sans', sans-serif);
+  font-size: clamp(2.4rem, 5.8vw, 3.8rem);
+  font-weight: 800;
+  color: var(--color-text-main, #F4F4F4);
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  margin-bottom: 0.45rem;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.75);
+}
+
+.anim4-wordmark.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.anim4-wordmark span {
+  color: var(--color-text-main, #F4F4F4);
+}
+
+.anim4-wordmark span:nth-child(3) {
+  margin-left: 0.35rem;
+}
+
+/* Tagline: IDEAS INSPIRE INVEST */
+.anim4-tagline {
+  font-family: var(--font-tagline, 'Outfit', sans-serif);
+  font-size: clamp(0.82rem, 2.0vw, 1.05rem);
+  font-weight: 600;
+  color: var(--color-text-secondary, #9CA3AF);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  margin: 0;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.15s, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.15s, letter-spacing 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s;
+  will-change: opacity, transform, letter-spacing;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.8);
+}
+
+.anim4-tagline.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+  letter-spacing: 0.36em;
+}
+
+/* Status Bar (Top Left) */
+.anim4-status-bar {
+  position: absolute;
+  top: 1.25rem;
+  left: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.anim4-brand-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.35rem 0.85rem;
+  background: rgba(16, 27, 48, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 9999px;
+  font-family: var(--font-sans, sans-serif);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-main, #F4F4F4);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.anim4-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-brand-blue, #0072FF);
+  box-shadow: 0 0 8px var(--color-brand-blue, #0072FF);
+  animation: anim4DotPulse 2s infinite ease-in-out;
+}
+
+@keyframes anim4DotPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+.anim4-society-title {
+  color: var(--color-text-main, #F4F4F4);
+  font-weight: 700;
+}
+
+.anim4-phase-badge {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--color-text-secondary, #9CA3AF);
+  border-left: 1px solid rgba(255, 255, 255, 0.15);
+  padding-left: 0.55rem;
+}
+
+.anim4-timer-display {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.8rem;
+  color: var(--color-text-secondary, #9CA3AF);
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+/* Controls Bar (Bottom Center) */
+.anim4-controls-bar {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.45rem 0.75rem;
+  background: rgba(16, 27, 48, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 9999px;
+  z-index: 10;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+}
+
+.anim4-ctrl-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: transparent;
+  border: none;
+  color: var(--color-text-secondary, #9CA3AF);
+  font-family: var(--font-sans, sans-serif);
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0.4rem 0.85rem;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  outline: none;
+}
+
+.anim4-ctrl-btn:hover {
+  color: var(--color-text-main, #F4F4F4);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.anim4-ctrl-btn:active {
+  transform: scale(0.96);
+}
+
+.anim4-ctrl-btn.primary {
+  background: linear-gradient(135deg, rgba(0, 200, 83, 0.2) 0%, rgba(0, 114, 255, 0.2) 100%);
+  border: 1px solid rgba(0, 200, 83, 0.4);
+  color: var(--color-text-main, #F4F4F4);
+}
+
+.anim4-ctrl-btn.primary:hover {
+  background: linear-gradient(135deg, rgba(0, 200, 83, 0.35) 0%, rgba(0, 114, 255, 0.35) 100%);
+  border-color: rgba(0, 200, 83, 0.6);
+  box-shadow: 0 0 16px rgba(0, 200, 83, 0.25);
+}
+
+.anim4-ctrl-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.anim4-kbd-hint {
+  display: inline-block;
+  padding: 0.1rem 0.35rem;
+  font-size: 0.68rem;
+  font-family: var(--font-mono, monospace);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  color: var(--color-text-secondary, #9CA3AF);
+  margin-left: 0.25rem;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 640px) {
+  .orbital-trace-svg {
+    top: calc(50% - 54px);
+    width: clamp(180px, 50vw, 225px);
+  }
+
+  .anim4-typography-layer {
+    top: calc(50% + 68px);
+  }
+
+  .anim4-wordmark {
+    font-size: 2.3rem;
+  }
+
+  .anim4-tagline {
+    font-size: 0.74rem;
+    letter-spacing: 0.24em;
+  }
+
+  .anim4-controls-bar {
+    bottom: 1.25rem;
+    gap: 0.35rem;
+    padding: 0.35rem 0.5rem;
+  }
+
+  .anim4-ctrl-btn {
+    padding: 0.35rem 0.65rem;
+    font-size: 0.75rem;
+  }
+
+  .anim4-kbd-hint {
+    display: none;
+  }
+}

@@ -149,6 +149,25 @@ body {
   box-shadow: 0 0 10px #00C853;
 }
 
+.pill-dot.final {
+  background: #0072FF;
+  box-shadow: 0 0 8px #0072FF;
+}
+
+.pill-dot.testing {
+  background: #EAB308;
+  box-shadow: 0 0 8px #EAB308;
+}
+
+.final-mode-nav {
+  opacity: 0.85;
+  transition: opacity 0.3s ease;
+}
+
+.final-mode-nav:hover {
+  opacity: 1;
+}
+
 /* Mobile responsive adjustments */
 @media (max-width: 640px) {
   #lab-switcher {

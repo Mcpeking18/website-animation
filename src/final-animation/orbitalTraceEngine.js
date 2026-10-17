@@ -11,18 +11,17 @@
  * SVG precision while the orbital comet trails and ambient stardust frame the emblem.
  */
 
-import { BRAND } from '../../shared/brand.js';
-import { SVG_EMBLEM_PATHS } from '../animation3/traceEngine.js';
+import { BRAND } from '../shared/brand.js';
+import { SVG_EMBLEM_PATHS } from '../shared/paths.js';
 
 export const TIMING_ORBITAL_TRACE = {
-  traceStart: 350,         // 0.35s: SVG geometric path tracing begins
-  orbitStart: 1250,        // 1.25s: Orbital comet trail awakens a bit later
-  emblemTraceEnd: 2700,    // 0.35 - 2.7s: Upper green & lower blue SVG paths trace with sparks & fill
-  centerEEnd: 3400,        // 2.7 - 3.4s: Central lowercase 'e' traces & fills cleanly
-  logoResolveEnd: 3750,    // 3.4 - 3.75s: Emblem settles, subtle glow swell settles into background
-  wordmarkEnd: 4400,       // 3.75 - 4.4s: "eCell MSIT" wordmark reveals
-  taglineEnd: 5050,        // 4.4 - 5.05s: "IDEAS INSPIRE INVEST" reveals
-  totalDuration: 5050      // 5.05s+: Permanent ambient orbital hold
+  traceStart: 300,         // 0.3s: Tracing sparks ignite & single 1-dot orbital comet awakens
+  emblemTraceEnd: 2600,    // 0.3 - 2.6s: Upper green & lower blue SVG paths trace with sparks & fill
+  centerEEnd: 3300,        // 2.6 - 3.3s: Central lowercase 'e' traces & trail reaches 100% full length
+  logoResolveEnd: 3650,    // 3.3 - 3.65s: Emblem settles, subtle glow swell settles into background
+  wordmarkEnd: 4300,       // 3.65 - 4.3s: "eCell MSIT" wordmark reveals
+  taglineEnd: 4950,        // 4.3 - 4.95s: "IDEAS INSPIRE INVEST" reveals
+  totalDuration: 4950      // 4.95s+: Permanent ambient orbital hold
 };
 
 export class OrbitalTraceEngine {
@@ -51,7 +50,8 @@ export class OrbitalTraceEngine {
     this.ambientParticles = [];
     this.orbitalTrail = [];
     this.orbitAngle = 0;
-    this.orbitAlpha = 0; // Starts at 0, awakens a bit later
+    this.orbitActive = false;
+    this.trailLengthFactor = 0; // Starts at 0 (only 1 dot: the head) and expands to 1.0 (full trail)
     this.stardustDroplets = [];
 
     // Glow intensity state
@@ -237,9 +237,10 @@ export class OrbitalTraceEngine {
     this.orbitalTrail = [];
     const trailCount = 32;
     for (let i = 0; i < trailCount; i++) {
-      const frac = i / trailCount;
+      const frac = i / (trailCount - 1);
       const isHead = i === trailCount - 1;
       this.orbitalTrail.push({
+        frac: frac,
         offsetAngle: frac * Math.PI * 0.95, // Segmented sweeping arc
         distX: this.emblemRadius * 1.45,
         distY: this.emblemRadius * 0.90,
@@ -330,13 +331,18 @@ export class OrbitalTraceEngine {
   }
 
   update(elapsed) {
-    // 1. Advance Orbital Angle smoothly & awaken orbit a bit late
-    if (elapsed < TIMING_ORBITAL_TRACE.orbitStart) {
-      this.orbitAlpha = 0;
+    // 1. Orbital comet starts in sync with tracing start (300ms) as a single dot, expanding to full length by centerEEnd
+    if (elapsed < TIMING_ORBITAL_TRACE.traceStart) {
+      this.orbitActive = false;
+      this.trailLengthFactor = 0;
     } else {
-      // Fade in gracefully over 450ms once awakened
-      this.orbitAlpha = Math.min(1.0, (elapsed - TIMING_ORBITAL_TRACE.orbitStart) / 450);
+      this.orbitActive = true;
       this.orbitAngle += 0.025 * this.speed;
+
+      // Trail grows dynamically from 1 dot (head) to full length by the time logo is fully traced
+      const traceDuration = TIMING_ORBITAL_TRACE.centerEEnd - TIMING_ORBITAL_TRACE.traceStart;
+      const progress = Math.min(1.0, (elapsed - TIMING_ORBITAL_TRACE.traceStart) / traceDuration);
+      this.trailLengthFactor = Math.min(1.0, 1 - Math.pow(1 - progress, 1.8));
     }
 
     // 2. Update Ambient Floating Micro-particles
@@ -350,7 +356,7 @@ export class OrbitalTraceEngine {
     }
 
     // 3. Emit occasional fine green/blue stardust droplets from orbital comet head once active
-    if (this.orbitAlpha > 0.3 && Math.random() < 0.22 * this.speed) {
+    if (this.orbitActive && Math.random() < 0.22 * this.speed) {
       const head = this.orbitalTrail[this.orbitalTrail.length - 1];
       if (head) {
         const curA = this.orbitAngle + head.offsetAngle;
@@ -581,10 +587,17 @@ export class OrbitalTraceEngine {
       ctx.restore();
     }
 
-    // 5. Single Blue & Green Orbital Comet Trail (Luminous celestial motion)
-    if (this.orbitAlpha > 0.01) {
+    // 5. Single Blue & Green Orbital Comet Trail (Dynamically expanding trail length)
+    if (this.orbitActive) {
       ctx.save();
+      const minFrac = 1.0 - this.trailLengthFactor;
+
       for (const orb of this.orbitalTrail) {
+        // The head is always visible; tail particles emerge as trailLengthFactor increases
+        if (!orb.isHead && orb.frac < minFrac) {
+          continue;
+        }
+
         const curAngle = this.orbitAngle + orb.offsetAngle;
         const rawX = Math.cos(curAngle) * orb.distX;
         const rawY = Math.sin(curAngle) * orb.distY;
@@ -596,7 +609,10 @@ export class OrbitalTraceEngine {
         const orbY = this.centerY + rotY;
 
         ctx.fillStyle = orb.isHead ? '#FFFFFF' : orb.color;
-        ctx.globalAlpha = orb.alpha * this.orbitAlpha;
+
+        // Smooth opacity ramp for newly emerged tail segments
+        const ramp = orb.isHead ? 1.0 : Math.min(1.0, (orb.frac - minFrac) / 0.12 + 0.15);
+        ctx.globalAlpha = orb.alpha * ramp;
 
         // Shadow halo for comet body
         ctx.shadowColor = orb.color;
@@ -610,7 +626,7 @@ export class OrbitalTraceEngine {
         if (orb.isHead) {
           ctx.beginPath();
           ctx.fillStyle = '#0072FF';
-          ctx.globalAlpha = 0.55 * this.orbitAlpha;
+          ctx.globalAlpha = 0.55;
           ctx.arc(orbX, orbY, orb.baseRadius * 1.85, 0, Math.PI * 2);
           ctx.fill();
         }

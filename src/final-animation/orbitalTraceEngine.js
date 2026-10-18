@@ -15,13 +15,13 @@ import { BRAND } from '../shared/brand.js';
 import { SVG_EMBLEM_PATHS } from '../shared/paths.js';
 
 export const TIMING_ORBITAL_TRACE = {
-  traceStart: 300,         // 0.3s: Tracing sparks ignite & single 1-dot orbital comet awakens
-  emblemTraceEnd: 2600,    // 0.3 - 2.6s: Upper green & lower blue SVG paths trace with sparks & fill
-  centerEEnd: 3300,        // 2.6 - 3.3s: Central lowercase 'e' traces & trail reaches 100% full length
-  logoResolveEnd: 3650,    // 3.3 - 3.65s: Emblem settles, subtle glow swell settles into background
-  wordmarkEnd: 4300,       // 3.65 - 4.3s: "eCell MSIT" wordmark reveals
-  taglineEnd: 4950,        // 4.3 - 4.95s: "IDEAS INSPIRE INVEST" reveals
-  totalDuration: 4950      // 4.95s+: Permanent ambient orbital hold
+  traceStart: 250,         // 0.25s: Tracing sparks ignite & single 1-dot orbital comet awakens
+  emblemTraceEnd: 2350,    // 0.25 - 2.35s: Upper green & lower blue SVG paths trace with sparks & fill
+  centerEEnd: 3000,        // 2.35 - 3.0s: Central lowercase 'e' traces & trail reaches 100% full length
+  logoResolveEnd: 3350,    // 3.0 - 3.35s: Emblem settles, subtle glow swell settles into background
+  wordmarkEnd: 3900,       // 3.35 - 3.9s: "eCell MSIT" wordmark reveals
+  taglineEnd: 4500,        // 3.9 - 4.5s: "IDEATE. INSPIRE. INVEST." reveals
+  totalDuration: 4500      // 4.5s: Total duration (settles into continuous ambient hold)
 };
 
 export class OrbitalTraceEngine {

@@ -7,7 +7,7 @@
 export const BRAND = {
   name: 'eCell MSIT',
   organization: 'Entrepreneurship Cell, MSIT',
-  tagline: 'IDEAS INSPIRE INVEST',
+  tagline: 'IDEATE. INSPIRE. INVEST.',
 
   colors: {
     // Brand Primaries

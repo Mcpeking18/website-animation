@@ -13,9 +13,6 @@ export class Animation4Module {
     this.container = null;
     this.engine = null;
 
-    this.currentSpeedIndex = 1;
-    this.speedConfigs = [0.75, 1.0, 1.4];
-
     this.isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     this.boundHandlers = {};
   }
@@ -37,7 +34,7 @@ export class Animation4Module {
           <h1 class="anim4-wordmark">
             <span>e</span><span>Cell</span> <span>MSIT</span>
           </h1>
-          <p class="anim4-tagline">IDEAS INSPIRE INVEST</p>
+          <p class="anim4-tagline">IDEATE. INSPIRE. INVEST.</p>
         </section>
 
         <!-- Minimal Sleek Floating Replay Control -->
@@ -50,6 +47,7 @@ export class Animation4Module {
             <span>Replay</span>
             <kbd class="anim4-kbd-hint">R</kbd>
           </button>
+          <span class="anim4-timer-display" title="Animation playback time">0.0s / 4.5s</span>
         </nav>
       </div>
     `;
@@ -60,25 +58,22 @@ export class Animation4Module {
     this.wordmark = container.querySelector('.anim4-wordmark');
     this.tagline = container.querySelector('.anim4-tagline');
     this.btnReplay = container.querySelector('.btn-replay');
+    this.timerDisplay = container.querySelector('.anim4-timer-display');
 
     this.initEngine();
     this.bindEvents();
   }
 
   initEngine() {
-    const PHASE_TITLES = {
-      'atmosphere': 'Phase A · Atmosphere Awakens',
-      'tracing': 'Phase B · Tracing SVG Petals',
-      'orbitalTracing': 'Phase B · Orbital Energy Arrives',
-      'centerE': 'Phase C · Tracing Lettermark',
-      'resolving': 'Phase C · Emblem Resolves',
-      'wordmark': 'Phase D · Wordmark Emerges',
-      'tagline': 'Phase E · Tagline Expands',
-      'hold': 'Phase F · Celestial Orbital Hold'
-    };
-
     this.engine = new OrbitalTraceEngine(this.canvas, this.svgContainer, {
-      onPhaseChange: (phase) => {
+      onPhaseChange: (phase, elapsed) => {
+        // Update live timer display
+        if (this.timerDisplay && typeof elapsed === 'number') {
+          const maxSec = (TIMING_ORBITAL_TRACE.totalDuration / 1000).toFixed(1);
+          const sec = Math.min(parseFloat(maxSec), elapsed / 1000).toFixed(1);
+          this.timerDisplay.textContent = `${sec}s / ${maxSec}s`;
+        }
+
         // Trigger typography reveals sequentially
         if (phase === 'wordmark' || phase === 'tagline' || phase === 'hold') {
           this.wordmark?.classList.add('is-revealed');
@@ -111,6 +106,10 @@ export class Animation4Module {
 
     // Replay
     this.boundHandlers.onReplay = () => {
+      if (this.timerDisplay) {
+        const maxSec = (TIMING_ORBITAL_TRACE.totalDuration / 1000).toFixed(1);
+        this.timerDisplay.textContent = `0.0s / ${maxSec}s`;
+      }
       this.wordmark?.classList.remove('is-revealed');
       this.tagline?.classList.remove('is-revealed');
       this.engine?.start();

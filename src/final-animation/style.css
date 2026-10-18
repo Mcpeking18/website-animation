@@ -133,68 +133,17 @@
   letter-spacing: 0.36em;
 }
 
-/* Status Bar (Top Left) */
-.anim4-status-bar {
-  position: absolute;
-  top: 1.25rem;
-  left: 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 1.25rem;
-  z-index: 10;
-  pointer-events: none;
-}
-
-.anim4-brand-badge {
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
-  padding: 0.35rem 0.85rem;
-  background: rgba(16, 27, 48, 0.65);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 9999px;
-  font-family: var(--font-sans, sans-serif);
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--color-text-main, #F4F4F4);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-}
-
-.anim4-status-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--color-brand-blue, #0072FF);
-  box-shadow: 0 0 8px var(--color-brand-blue, #0072FF);
-  animation: anim4DotPulse 2s infinite ease-in-out;
-}
-
-@keyframes anim4DotPulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(0.85); }
-}
-
-.anim4-society-title {
-  color: var(--color-text-main, #F4F4F4);
-  font-weight: 700;
-}
-
-.anim4-phase-badge {
-  font-size: 0.72rem;
-  font-weight: 500;
-  color: var(--color-text-secondary, #9CA3AF);
-  border-left: 1px solid rgba(255, 255, 255, 0.15);
-  padding-left: 0.55rem;
-}
-
+/* Digital Timer Display */
 .anim4-timer-display {
   font-family: var(--font-mono, monospace);
   font-size: 0.8rem;
   color: var(--color-text-secondary, #9CA3AF);
   font-weight: 600;
-  opacity: 0.8;
+  opacity: 0.85;
+  padding: 0 0.5rem 0 0.65rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.15);
+  letter-spacing: 0.04em;
+  user-select: none;
 }
 
 /* Controls Bar (Bottom Center) */
